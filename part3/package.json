@@ -1,0 +1,40 @@
+{
+    "name": "backend",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build:ui": "rm -rf dist && cd ../full-stack-open-exercises/part2/thephonebook/ && npm run build && cp -r dist ../../../full-stack-open-exercises-part3/",
+        "deploy": "flyctl deploy",
+        "deploy:full": "npm run build:ui && npm run deploy",
+        "logs:prod": "flyctl logs",
+        "lint": "eslint ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Meimuri/full-stack-open-exercises-part3.git"
+    },
+    "author": "Michael Alcaraz II",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Meimuri/full-stack-open-exercises-part3/issues"
+    },
+    "homepage": "https://github.com/Meimuri/full-stack-open-exercises-part3#readme",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "mongoose": "^7.6.3",
+        "morgan": "^1.10.0"
+    },
+    "devDependencies": {
+        "@flydotio/dockerfile": "^0.4.10",
+        "eslint": "^8.52.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-plugin-import": "^2.28.1",
+        "nodemon": "^3.0.1"
+    }
+}
