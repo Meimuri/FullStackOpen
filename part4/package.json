@@ -1,0 +1,44 @@
+{
+    "name": "meimuri-blog",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "cross-env NODE_ENV=production node index.js",
+        "dev": "cross-env NODE_ENV=development nodemon index.js",
+        "build:ui": "rm -rf dist && cd ../bloglist-frontend/ && npm run build && cp -r dist ../bloglist-backend",
+        "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
+        "start:test": "NODE_ENV=test node index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Meimuri/full-stack-open-exercises-part4.git"
+    },
+    "author": "Michael Alcaraz II",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Meimuri/full-stack-open-exercises-part4/issues"
+    },
+    "homepage": "https://github.com/Meimuri/full-stack-open-exercises-part4#readme",
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "cors": "^2.8.5",
+        "cross-env": "^7.0.3",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "express-async-errors": "^3.1.1",
+        "jsonwebtoken": "^9.0.2",
+        "lodash": "^4.17.21",
+        "mongoose": "^7.6.3",
+        "mongoose-unique-validator": "^4.0.0"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0",
+        "nodemon": "^3.0.1",
+        "supertest": "^6.3.3"
+    },
+    "jest": {
+        "testEnvironment": "node",
+        "globalTeardown": "./tests/teardown.js"
+    }
+}
