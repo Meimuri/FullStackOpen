@@ -5,6 +5,7 @@
 This course serves as an introduction to modern web application development with JavaScript. The main focus is on building single page applications with ReactJS that use REST APIs built with Node.js. The course also contains a section on GraphQL, a modern alternative to REST APIs.
 
 The course covers testing, configuration and environment management, the use of databases for storing the application’s data amongst other things.
+g
 
 ## Course Contents
 
@@ -55,3 +56,7 @@ The course covers testing, configuration and environment management, the use of 
 -   Many reducers
 -   Communicating with server in a redux application
 -   React Query, useReducer and the context
+
+## Authors
+
+Parts 0-8 and 13 of the course material is written by [Matti Luukkainen](https://github.com/mluukkai). The content of part 9 is written by developers from [Terveystalo](https://www.terveystalo.com/fi/Yritystietoa/Terveystalo-tyontantajana/Digital-Health/). Part 10 is written by [Kalle Ilves](https://github.com/Kaltsoon). The content of part 11 is written by developers from [Smartly](https://www.smartly.io/) and part 12 is by [Jami Kousa](https://github.com/jakousa). Numerous [people](https://github.com/fullstack-hy2020/misc/blob/master/contributors.md) have improved and corrected the material both in content and spelling. You can also make improvements to the course material yourself. The course webpage is designed and created by [Houston inc](https://www.houston-inc.com/), who have also audited the content of the course material. Chinese translation by [Zhang Wei](https://zhangwei.online/blog). Spanish translation by [Sebastian Torres](https://github.com/sebastiantorres86), [Cynthia Vico Vacca](https://github.com/cynthiamv) and [Pablo Maffioli](https://github.com/pablo-maff) with the support of [FrontendCafé](https://frontend.cafe/).
