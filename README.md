@@ -58,7 +58,7 @@ The course covers testing, configuration and environment management, the use of 
 
 ## Certificate
 
-![Part 1 to 7](assets/part1-7.png)
+![Part 1 to 7](assets/part1to7.png)
 
 ## Authors
 
