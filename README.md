@@ -58,7 +58,7 @@ The course covers testing, configuration and environment management, the use of 
 
 ## Certificate
 
--   ![Part 1 to 7](https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/1a2210fbdf7707ebc1881a2fa306cb58 "Part 1 to 7")
+![Part 1 to 7](part1-7.png)
 
 ## Authors
 
