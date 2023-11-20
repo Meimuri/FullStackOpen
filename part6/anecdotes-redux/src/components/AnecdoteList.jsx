@@ -23,9 +23,11 @@ const AnecdoteList = () => {
               );
     });
 
+    const sortAnecdotes = [...anecdotes];
+
     return (
         <div>
-            {anecdotes
+            {sortAnecdotes
                 .sort((a, b) => b.votes - a.votes)
                 .map((anecdote) => (
                     <Anecdote
