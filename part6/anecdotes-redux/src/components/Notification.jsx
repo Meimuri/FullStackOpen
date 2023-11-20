@@ -7,11 +7,7 @@ const Notification = () => {
         padding: 10,
         borderWidth: 1,
     };
-    return (
-        notification && (
-            <div style={style}>{`You have voted "${notification}".`}</div>
-        )
-    );
+    return notification && <div style={style}>{notification}</div>;
 };
 
 export default Notification;

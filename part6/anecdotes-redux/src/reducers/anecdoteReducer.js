@@ -1,21 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import anecdoteService from "../services/anecdotes";
+import { setNotification } from "./notificationReducer";
 
 const anecdoteSlice = createSlice({
     name: "filter",
     initialState: [],
     reducers: {
-        // voteAnecdote(state, action) {
-        //     const id = action.payload;
-        //     const anecdoteToChange = state.find((n) => n.id === id);
-        //     const changedAnecdote = {
-        //         ...anecdoteToChange,
-        //         votes: anecdoteToChange.votes + 1,
-        //     };
-        //     return state.map((anecdote) =>
-        //         anecdote.id !== id ? anecdote : changedAnecdote
-        //     );
-        // },
         appendAnecdote(state, action) {
             state.push(action.payload);
         },
@@ -39,6 +29,7 @@ export const createAnecdote = (content) => {
     return async (dispatch) => {
         const newAnecdote = await anecdoteService.createNew(content);
         dispatch(appendAnecdote(newAnecdote));
+        dispatch(setNotification(`You have added '${content}'!`, 5));
     };
 };
 
@@ -47,6 +38,9 @@ export const vote = (anecdote) => {
         await anecdoteService.addVote(anecdote);
         const updatedAnecdotes = await anecdoteService.getAll();
         dispatch(setAnecdotes(updatedAnecdotes));
+        dispatch(
+            setNotification(`You have voted for '${anecdote.content}'!`, 5)
+        );
     };
 };
 
