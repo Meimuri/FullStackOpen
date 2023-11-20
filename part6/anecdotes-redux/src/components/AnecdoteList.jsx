@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { voteAnecdote } from "../reducers/anecdoteReducer";
-import { notificationHandler } from "../reducers/notificationReducer";
+import { vote } from "../reducers/anecdoteReducer";
+// import { notificationHandler } from "../reducers/notificationReducer";
 
 const Anecdote = ({ anecdote, handleClick }) => {
     return (
@@ -26,9 +26,8 @@ const AnecdoteList = () => {
 
     const sortAnecdotes = [...anecdotes];
 
-    const castVote = (id, content) => {
-        dispatch(voteAnecdote(id));
-        dispatch(notificationHandler(content));
+    const castVote = (anecdote) => {
+        dispatch(vote(anecdote));
     };
 
     return (
@@ -39,9 +38,7 @@ const AnecdoteList = () => {
                     <Anecdote
                         key={anecdote.id}
                         anecdote={anecdote}
-                        handleClick={() =>
-                            castVote(anecdote.id, anecdote.content)
-                        }
+                        handleClick={() => castVote(anecdote)}
                     />
                 ))}
         </div>
