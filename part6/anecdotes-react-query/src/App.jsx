@@ -1,16 +1,30 @@
+import { useReducer } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getAnecdote, updateAnecdoteVote } from "./request";
+import NotificationContext from "./NotificationContext";
+import notificationReducer from "./reducers/notificationReducer";
+
 import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAnecdote, updateAnecdoteVote } from "./request";
-
 const App = () => {
     const queryClient = useQueryClient();
+    const [notification, notificationDispatch] = useReducer(
+        notificationReducer,
+        ""
+    );
 
     const updateAnecdoteMutation = useMutation({
         mutationFn: updateAnecdoteVote,
-        onSuccess: () => {
+        onSuccess: (anecdote) => {
             queryClient.invalidateQueries({ queryKey: ["anecdotes"] });
+            notificationDispatch({
+                type: "SHOW",
+                payload: `Voted for anecdote "${anecdote.content}".`,
+            });
+            setTimeout(() => {
+                notificationDispatch({ type: "REMOVE" });
+            }, 5000);
         },
     });
 
@@ -46,22 +60,26 @@ const App = () => {
 
     return (
         <div>
-            <h3>Anecdote App</h3>
+            <NotificationContext.Provider
+                value={[notification, notificationDispatch]}
+            >
+                <h3>Anecdote App</h3>
 
-            <Notification />
-            <AnecdoteForm />
+                <Notification />
+                <AnecdoteForm />
 
-            {anecdotes.map((anecdote) => (
-                <div key={anecdote.id}>
-                    <div>{anecdote.content}</div>
-                    <div>
-                        has {anecdote.votes}
-                        <button onClick={() => handleVote(anecdote)}>
-                            Vote
-                        </button>
+                {anecdotes.map((anecdote) => (
+                    <div key={anecdote.id}>
+                        <div>{anecdote.content}</div>
+                        <div>
+                            has {anecdote.votes}
+                            <button onClick={() => handleVote(anecdote)}>
+                                Vote
+                            </button>
+                        </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </NotificationContext.Provider>
         </div>
     );
 };
