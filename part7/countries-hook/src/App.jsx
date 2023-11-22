@@ -1,48 +1,76 @@
 import { useState, useEffect } from "react";
-import countryService from "./services/country";
-import Filter from "./components/Filter";
-import Result from "./components/Result";
+import axios from "axios";
 
-const App = () => {
-    const [countries, setCountries] = useState([]);
-    const [searchFilter, setSearchFilter] = useState("");
-    const [searchResult, setSearchResult] = useState([]);
+const useField = (type) => {
+    const [value, setValue] = useState("");
 
-    useEffect(() => {
-        countryService.getAll().then((initialCountries) => {
-            setCountries(initialCountries);
-        });
-    }, []);
-
-    useEffect(() => {
-        const result =
-            searchFilter == 0
-                ? []
-                : countries.filter((country) =>
-                      country.name.common
-                          .toLowerCase()
-                          .includes(searchFilter.toLowerCase())
-                  );
-        setSearchResult(result);
-    }, [countries, searchFilter]);
-
-    const handleFilterChange = (event) => {
-        setSearchFilter(event.target.value);
+    const onChange = (event) => {
+        setValue(event.target.value);
     };
 
-    const buttonSearch = (name) => {
-        setSearchFilter(name);
+    return {
+        type,
+        value,
+        onChange,
+    };
+};
+const useCountry = (name) => {
+    const [country, setCountry] = useState(null);
+
+    useEffect(() => {
+        axios
+            .get(
+                `https://studies.cs.helsinki.fi/restcountries/api/name/${name}`
+            )
+            .then((res) => {
+                setCountry(res.data);
+            })
+            .catch(() => {
+                setCountry(null);
+            });
+    }, [name]);
+
+    return country;
+};
+
+const Country = ({ country }) => {
+    if (!country) {
+        return <div>No countries found</div>;
+    }
+
+    return (
+        <div>
+            <h3>{country.name.common} </h3>
+            <div>Capital: {country.capital} </div>
+            <div>Population: {country.population}</div>
+            <img
+                src={country.flags.png}
+                height="100"
+                alt={`flag of ${country.name.common}`}
+            />
+        </div>
+    );
+};
+
+const App = () => {
+    const nameInput = useField("text");
+    const [name, setName] = useState("");
+    const country = useCountry(name);
+
+    const fetch = (e) => {
+        e.preventDefault();
+        setName(nameInput.value);
     };
 
     return (
-        <>
-            <Filter
-                text="Search countries: "
-                inputValue={searchFilter}
-                functionHandler={handleFilterChange}
-            />
-            <Result filter={searchResult} functionHandler={buttonSearch} />
-        </>
+        <div>
+            <form onSubmit={fetch}>
+                <input {...nameInput} />
+                <button>Search</button>
+            </form>
+
+            <Country country={country} />
+        </div>
     );
 };
 
