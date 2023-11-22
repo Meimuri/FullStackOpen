@@ -24,6 +24,15 @@ const AnecdoteForm = () => {
                 notificationDispatch({ type: "REMOVE" });
             }, 5000);
         },
+        onError: (err) => {
+            notificationDispatch({
+                type: "SHOW",
+                payload: `${err.response.data.error}`,
+            });
+            setTimeout(() => {
+                notificationDispatch({ type: "REMOVE" });
+            }, 5000);
+        },
     });
 
     const onCreate = (event) => {
