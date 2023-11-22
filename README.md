@@ -56,6 +56,15 @@ The course covers testing, configuration and environment management, the use of 
 -   Communicating with server in a redux application
 -   React Query, useReducer and the context
 
+### [Part 7 - React router, custom hooks, styling app with CSS and webpack](https://github.com/Meimuri/fullstackopen/tree/main/part7)
+
+-   React Router
+-   Custom Hooks
+-   More about styles
+-   Webpack
+-   Class components, Miscellaneous
+-   Exercises: Extending the bloglist
+
 ## Certificate
 
 ![Part 1 to 7](assets/part1to7.png)
