@@ -1,67 +1,52 @@
-const { groupBy } = require("lodash");
+const _ = require("lodash");
 
-const dummy = (blogs) => 1;
+const dummy = (blogs) => {
+    return 1;
+};
 
 const totalLikes = (blogs) => {
-    return blogs.reduce((sum, blog) => blog.likes + sum, 0);
+    return blogs.length == 0 ? 0 : blogs.reduce((acc, o) => acc + o.likes, 0);
 };
 
 const favoriteBlog = (blogs) => {
-    if (blogs.length === 0) {
-        return undefined;
-    }
+    const result = [];
 
-    const { title, author, url, likes } = blogs.sort(
-        (b1, b2) => b2.likes - b1.likes
-    )[0];
-
-    return { title, author, url, likes };
+    result.push(
+        blogs.reduce((max, blog) => (max.likes > blog.likes ? max : blog))
+    );
+    return result;
 };
 
-const mostBlogs = (blogs) => {
-    if (blogs.length === 0) {
-        return undefined;
-    }
-
-    const blogsByAuthor = groupBy(blogs, (blog) => blog.author);
-
-    const authorBlogs = Object.entries(blogsByAuthor).reduce(
-        (array, [author, blogList]) => {
-            return array.concat({
-                author,
-                blogs: blogList.length,
-            });
-        },
-        []
-    );
-
-    return authorBlogs.sort((e1, e2) => e2.blogs - e1.blogs)[0];
+const mostBlog = (blogs) => {
+    const result = [];
+    const arr = _(blogs)
+        .groupBy("author")
+        .map((objs, key) => ({
+            author: key,
+            blogs: objs.length,
+        }))
+        .value();
+    result.push(arr.reduce((max, res) => (max.blogs > res.blogs ? max : res)));
+    return result;
 };
 
 const mostLikes = (blogs) => {
-    if (blogs.length === 0) {
-        return undefined;
-    }
-
-    const blogsByAuthor = groupBy(blogs, (blog) => blog.author);
-
-    const authorBlogs = Object.entries(blogsByAuthor).reduce(
-        (array, [author, blogList]) => {
-            return array.concat({
-                author,
-                likes: blogList.reduce((sum, blog) => sum + blog.likes, 0),
-            });
-        },
-        []
-    );
-
-    return authorBlogs.sort((e1, e2) => e2.likes - e1.likes)[0];
+    const result = [];
+    const arr = _(blogs)
+        .groupBy("author")
+        .map((objs, key) => ({
+            author: key,
+            likes: _.sumBy(objs, "likes"),
+        }))
+        .value();
+    result.push(arr.reduce((max, res) => (max.likes > res.likes ? max : res)));
+    return result;
 };
 
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs,
+    mostBlog,
     mostLikes,
 };

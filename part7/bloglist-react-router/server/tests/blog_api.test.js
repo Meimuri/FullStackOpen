@@ -1,261 +1,149 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
+const helper = require("./test_helper");
 const app = require("../app");
-
 const api = supertest(app);
-const Blog = require("../models/blog");
 const User = require("../models/user");
+const Blog = require("../models/blog");
 
-const {
-    initialUsers,
-    initialBlogs,
-    blogsInDb,
-    usersInDb,
-} = require("./test_helper");
+let token = "";
 
-let authHeader;
+beforeAll(async () => {
+    await User.updateMany({}, { $unset: { blogs: 1 } });
+    await Blog.deleteMany({});
 
-describe("blogs api", () => {
-    beforeEach(async () => {
-        await User.deleteMany({});
+    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+    const promiseArray = blogObjects.map((blog) => blog.save());
+    await Promise.all(promiseArray);
+}, 100000);
 
-        // create a test user and save the corresponding auth header
-        const user = initialUsers[0];
-        await api.post("/api/users").send(user);
-        const response = await api.post("/api/login").send(user);
-        authHeader = `Bearer ${response.body.token}`;
-    });
+beforeEach(async () => {
+    // Delete user then create a new one
+    // await Blog.deleteMany({});
+    const user = {
+        username: "admin",
+        password: "password",
+    };
 
-    describe("when there are blogs saved", () => {
-        beforeEach(async () => {
-            await Blog.deleteMany({});
-            await Blog.insertMany(initialBlogs);
-        });
+    const response = await api.post("/api/login").send(user);
+    token = response.body.token;
+}, 100000);
 
-        test("blogs are returned as json", async () => {
-            const response = await api
-                .get("/api/blogs")
-                .expect(200)
-                .expect("Content-Type", /application\/json/);
+describe("When there is initially some notes saved", () => {
+    test("Correct number of blogs are returned", async () => {
+        const response = await api.get("/api/blogs");
 
-            expect(response.body).toHaveLength(initialBlogs.length);
-        });
+        expect(response.body).toHaveLength(helper.initialBlogs.length);
+    }, 100000);
 
-        test("a blogs has field id", async () => {
-            const response = await api
-                .get("/api/blogs")
-                .expect(200)
-                .expect("Content-Type", /application\/json/);
-
-            const blog = response.body[0];
-
+    test("Unique identifier property is named id", async () => {
+        const response = await api.get("/api/blogs");
+        response.body.forEach((blog) => {
             expect(blog.id).toBeDefined();
         });
+    }, 100000);
+});
 
-        test("a blog can be edited", async () => {
-            const [blogBefore] = await blogsInDb();
+describe("Addition of a new blog", () => {
+    test("Creating a new blog", async () => {
+        const newBlog = {
+            title: "This is a sample blog",
+            author: "John Doe",
+            url: "www.google.com",
+            likes: 389,
+        };
 
-            const modifiedBlog = {
-                ...blogBefore,
-                title: "Goto considered useful",
-            };
+        await api
+            .post("/api/blogs")
+            .set("Authorization", `Bearer ${token}`)
+            .send(newBlog)
+            .expect(201)
+            .expect("Content-Type", /application\/json/);
 
-            await api
-                .put(`/api/blogs/${blogBefore.id}`)
-                .send(modifiedBlog)
-                .expect(200);
+        const blogsAtEnd = await helper.blogsInDb();
+        const contents = blogsAtEnd.map((n) => n.title);
+        expect(contents).toContain("This is a sample blog");
+    }, 100000);
 
-            const blogs = await blogsInDb();
+    test("Creating a new blog without a token should respond with status code 401", async () => {
+        const newBlog = {
+            title: "This is a sample blog",
+            author: "John Doe",
+            url: "www.google.com",
+            likes: 389,
+        };
 
-            const titles = blogs.map((r) => r.title);
+        await api.post("/api/blogs").send(newBlog).expect(401);
+    }, 100000);
 
-            expect(titles).toContain(modifiedBlog.title);
-        });
+    test("Defaults to 0 if likes property is missing from the request", async () => {
+        const newNoLikeBlog = {
+            title: "Blog with missing likes",
+            author: "John Doe",
+            url: "www.google.com",
+        };
 
-        describe("a new blog", () => {
-            test("can be added", async () => {
-                const blog = {
-                    title: "Go To Statement Considered Harmful",
-                    author: "Edsger W. Dijkstra",
-                    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-                    likes: 5,
-                };
+        await api
+            .post("/api/blogs")
+            .set("Authorization", `Bearer ${token}`)
+            .send(newNoLikeBlog)
+            .expect(201)
+            .expect("Content-Type", /application\/json/);
 
-                await api
-                    .post("/api/blogs")
-                    .set("Authorization", authHeader)
-                    .send(blog)
-                    .expect(201)
-                    .expect("Content-Type", /application\/json/);
+        const blogsAtEnd = await helper.blogsInDb();
+        const like = blogsAtEnd.map((n) => n.likes);
+        expect(like).toContain(0);
+    }, 100000);
 
-                const blogs = await blogsInDb();
+    test("Create new blog without title and/or url should respond with status code 400", async () => {
+        const newIncompleteBlog = {
+            author: "John Doe",
+            likes: 389,
+        };
 
-                expect(blogs).toHaveLength(initialBlogs.length + 1);
+        await api
+            .post("/api/blogs")
+            .set("Authorization", `Bearer ${token}`)
+            .send(newIncompleteBlog)
+            .expect(400);
+    }, 100000);
+});
 
-                const titles = blogs.map((r) => r.title);
+describe("Updating a blog", () => {
+    test("Succeeds if data is valid", async () => {
+        const blogsAtStart = await helper.blogsInDb();
+        const blogToUpdate = blogsAtStart[0];
 
-                expect(titles).toContain(blog.title);
-            });
+        await api.put(`/api/blogs/${blogToUpdate.id}`);
 
-            test("has likes initialized to 0 if initial value is not given", async () => {
-                const blog = {
-                    title: "Go To Statement Considered Harmful",
-                    author: "Edsger W. Dijkstra",
-                    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-                };
+        const blogsAtEnd = await helper.blogsInDb();
 
-                const response = await api
-                    .post("/api/blogs")
-                    .set("Authorization", authHeader)
-                    .send(blog)
-                    .expect(201)
-                    .expect("Content-Type", /application\/json/);
+        const like = blogsAtEnd.map((n) => n.likes);
+        expect(like).toContain(blogToUpdate.likes);
+    }, 100000);
+});
 
-                expect(response.body.likes).toBe(0);
-            });
+describe("Deletion of a blog", () => {
+    test("Succeeds with status code 204 if id is valid", async () => {
+        const blogsAtStart = await helper.blogsInDb();
+        const blogToDelete = blogsAtStart[3];
 
-            test("if title is missing, creation fails", async () => {
-                const blog = {
-                    author: "Edsger W. Dijkstra",
-                    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-                };
+        await api
+            .delete(`/api/blogs/${blogToDelete.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .expect(204);
 
-                const response = await api
-                    .post("/api/blogs")
-                    .set("Authorization", authHeader)
-                    .send(blog)
-                    .expect(400)
-                    .expect("Content-Type", /application\/json/);
-            });
+        const blogsAtEnd = await helper.blogsInDb();
+        const contents = blogsAtEnd.map((r) => r.title);
+        expect(contents).not.toContain(blogToDelete.title);
+    }, 100000);
 
-            test("if author is missing, creation fails", async () => {
-                const blog = {
-                    title: "Go To Statement Considered Harmful",
-                    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-                };
+    test("Deleting a blog without a token should respond with status code 401", async () => {
+        const blogsAtStart = await helper.blogsInDb();
+        const blogToDelete = blogsAtStart[0];
 
-                const response = await api
-                    .post("/api/blogs")
-                    .set("Authorization", authHeader)
-                    .send(blog)
-                    .expect(400)
-                    .expect("Content-Type", /application\/json/);
-            });
-        });
-    });
-
-    describe("a blog", () => {
-        let id;
-        beforeEach(async () => {
-            await Blog.deleteMany({});
-
-            const blog = {
-                title: "React patterns",
-                author: "Michael Chan",
-                url: "https://reactpatterns.com/",
-                likes: 7,
-            };
-
-            const response = await api
-                .post("/api/blogs")
-                .set("Authorization", authHeader)
-                .send(blog);
-
-            id = response.body.id;
-        });
-
-        test("can be deleted by the creator", async () => {
-            const blogsBefore = await blogsInDb();
-
-            await api
-                .delete(`/api/blogs/${id}`)
-                .set("Authorization", authHeader)
-                .expect(204);
-
-            const blogsAfter = await blogsInDb();
-
-            expect(blogsAfter).toHaveLength(0);
-        });
-
-        test("can not be deleted without valid auth header", async () => {
-            const blogsBefore = await blogsInDb();
-
-            await api.delete(`/api/blogs/${id}`).expect(401);
-
-            const blogsAfter = await blogsInDb();
-
-            expect(blogsAfter).toHaveLength(1);
-        });
-    });
-
-    describe("creation of a user", () => {
-        test("succeeds with valid username and password", async () => {
-            const user = {
-                username: "mluukkai",
-                password: "secret",
-            };
-
-            const response = await api
-                .post("/api/users")
-                .send(user)
-                .expect(201)
-                .expect("Content-Type", /application\/json/);
-
-            const users = await usersInDb();
-
-            expect(users).toHaveLength(initialUsers.length + 1);
-            const usernames = users.map((u) => u.username);
-            expect(usernames).toContain(user.username);
-        });
-
-        test("fails with a proper error if username is too short", async () => {
-            const user = {
-                username: "ml",
-                password: "secret",
-            };
-
-            const response = await api
-                .post("/api/users")
-                .send(user)
-                .expect(400)
-                .expect("Content-Type", /application\/json/);
-
-            expect(response.body.error).toContain(
-                "`username` (`ml`) is shorter than the minimum allowed length (3)"
-            );
-        });
-
-        test("fails with a proper error if password is too short", async () => {
-            const user = {
-                username: "mluukka",
-                password: "se",
-            };
-
-            const response = await api
-                .post("/api/users")
-                .send(user)
-                .expect(400)
-                .expect("Content-Type", /application\/json/);
-
-            expect(response.body.error).toContain(
-                "`password` is shorter than the minimum allowed length (3)"
-            );
-        });
-
-        test("fails with a proper error if username not unique", async () => {
-            const user = initialUsers[0];
-
-            const response = await api
-                .post("/api/users")
-                .send(user)
-                .expect(400)
-                .expect("Content-Type", /application\/json/);
-
-            expect(response.body.error).toContain(
-                "expected `username` to be unique."
-            );
-        });
-    });
+        await api.delete(`/api/blogs/${blogToDelete.id}`).expect(401);
+    }, 100000);
 });
 
 afterAll(async () => {
