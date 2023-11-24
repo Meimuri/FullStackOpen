@@ -1,48 +1,44 @@
-import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { handleLogin } from "../reducers/loginReducer";
 
-const LoginForm = ({ login }) => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+import { Form, Field } from "react-final-form";
 
-    const handleLogin = (event) => {
-        event.preventDefault();
-        login({
-            username: username,
-            password: password,
-        });
+const LoginForm = () => {
+    const dispatch = useDispatch();
 
-        setUsername("");
-        setPassword("");
+    const onSubmit = async (event) => {
+        dispatch(handleLogin(event));
     };
 
     return (
         <div>
             <h2>Login to app</h2>
-            <form onSubmit={handleLogin}>
-                <div>
-                    Username
-                    <input
-                        id="username"
-                        type="text"
-                        value={username}
-                        name="Username"
-                        onChange={({ target }) => setUsername(target.value)}
-                    />
-                </div>
-                <div>
-                    Password
-                    <input
-                        id="password"
-                        type="password"
-                        value={password}
-                        name="Password"
-                        onChange={({ target }) => setPassword(target.value)}
-                    />
-                </div>
-                <button id="login-button" type="submit">
-                    Login
-                </button>
-            </form>
+            <Form
+                onSubmit={onSubmit}
+                render={({ handleSubmit, submitting, pristine }) => (
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            <label>Username</label>
+                            <Field
+                                name="username"
+                                component="input"
+                                type="text"
+                            />
+                        </div>
+                        <div>
+                            <label>Password</label>
+                            <Field
+                                name="password"
+                                component="input"
+                                type="password"
+                            />
+                        </div>
+                        <button type="submit" disabled={submitting || pristine}>
+                            Login
+                        </button>
+                    </form>
+                )}
+            />
         </div>
     );
 };

@@ -1,55 +1,68 @@
-import { useState } from "react";
+// import { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createBlog } from "../reducers/blogReducer";
+import { Form, Field } from "react-final-form";
 
-const BlogForm = ({ handleAddBlog }) => {
-    const [title, setTitle] = useState("");
-    const [author, setAuthor] = useState("");
-    const [url, setUrl] = useState("");
+const BlogForm = () => {
+    const dispatch = useDispatch();
+    // const blogFormRef = useRef();
+    const user = useSelector((state) => state.login);
 
-    const addBlog = (event) => {
-        event.preventDefault();
-        handleAddBlog({
-            title: title,
-            author: author,
-            url: url,
-        });
-
-        setTitle("");
-        setAuthor("");
-        setUrl("");
+    const onSubmit = async (event) => {
+        dispatch(createBlog(event, user));
+        // Save the toggleVisibility on store
+        // blogFormRef.current.toggleVisibility();
     };
 
     return (
         <div>
             <h2>Add new blog</h2>
-            <form onSubmit={addBlog}>
-                {"Title: "}
-                <input
-                    id="title"
-                    value={title}
-                    onChange={(event) => setTitle(event.target.value)}
-                    placeholder="Title"
-                />{" "}
-                <br />
-                {"Author: "}
-                <input
-                    id="author"
-                    value={author}
-                    onChange={(event) => setAuthor(event.target.value)}
-                    placeholder="Author"
-                />{" "}
-                <br />
-                {"Url: "}
-                <input
-                    id="url"
-                    value={url}
-                    onChange={(event) => setUrl(event.target.value)}
-                    placeholder="Url"
-                />{" "}
-                <br />
-                <button id="save-button" type="submit">
-                    Save
-                </button>
-            </form>
+            <Form
+                onSubmit={onSubmit}
+                render={({ handleSubmit, form, submitting, pristine }) => (
+                    <form
+                        onSubmit={async (event) => {
+                            await handleSubmit(event);
+                            form.reset();
+                        }}
+                    >
+                        <div>
+                            <label>Title</label>
+                            <Field
+                                name="title"
+                                component="input"
+                                type="text"
+                                placeholder="Title"
+                            />
+                        </div>
+                        <div>
+                            <label>Author</label>
+                            <Field
+                                name="author"
+                                component="input"
+                                type="text"
+                                placeholder="Author"
+                            />
+                        </div>
+                        <div>
+                            <label>Url</label>
+                            <Field
+                                name="url"
+                                component="input"
+                                type="text"
+                                placeholder="Url"
+                            />
+                        </div>
+                        <button
+                            id="save-button"
+                            type="submit"
+                            disabled={submitting || pristine}
+                        >
+                            Save
+                        </button>
+                    </form>
+                )}
+            />
         </div>
     );
 };

@@ -1,11 +1,10 @@
 import axios from "axios";
 const baseUrl = "/api/blogs";
-// const baseUrl = "http://localhost:3001/api/blogs";
 
-let token = null;
+// let token = null;
 
 const setToken = (newToken) => {
-    token = `Bearer ${newToken}`;
+    const token = `Bearer ${newToken}`;
 };
 
 const getAll = () => {
@@ -13,7 +12,8 @@ const getAll = () => {
     return request.then((response) => response.data);
 };
 
-const create = async (newObject) => {
+const create = async (newObject, auth) => {
+    const token = `Bearer ${auth.token}`;
     const config = {
         headers: { Authorization: token },
     };
@@ -27,7 +27,7 @@ const update = (id) => {
     return request.then((response) => response.data);
 };
 
-const remove = (id) => {
+const remove = (id, token) => {
     const config = {
         headers: { Authorization: token },
     };

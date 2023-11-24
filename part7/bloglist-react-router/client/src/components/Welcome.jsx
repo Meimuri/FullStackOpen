@@ -1,10 +1,20 @@
+import { useDispatch, useSelector } from "react-redux";
+import { handleLogout } from "../reducers/loginReducer";
+
 import Button from "./Button";
 
-const Welcome = ({ user, handleLogout }) => {
+const Welcome = () => {
+    const login = useSelector((state) => state.login);
+    const dispatch = useDispatch();
+
+    const onClickLogout = async (event) => {
+        dispatch(handleLogout(event));
+    };
+
     return (
         <p>
-            {`${user.name} logged in `}
-            <Button label="Logout" onClick={handleLogout} />
+            {`${login.name} logged in `}
+            <Button label="Logout" onClick={onClickLogout} />
         </p>
     );
 };
