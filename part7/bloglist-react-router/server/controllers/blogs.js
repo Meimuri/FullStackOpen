@@ -42,18 +42,16 @@ blogsRouter.post("/", userExtractor, async (request, response) => {
     }
 });
 
-blogsRouter.put("/:id", async (request, response, next) => {
-    const updatedBlog = await Blog.findByIdAndUpdate(
+blogsRouter.put("/:id", async (request, response) => {
+    const { title, url, author, likes } = request.body;
+
+    let updatedBlog = await Blog.findByIdAndUpdate(
         request.params.id,
-        {
-            $inc: {
-                likes: 1,
-            },
-        },
-        {
-            new: true,
-        }
+        { title, url, author, likes },
+        { new: true }
     );
+
+    updatedBlog = await Blog.findById(updatedBlog._id).populate("user");
     response.json(updatedBlog);
 });
 
