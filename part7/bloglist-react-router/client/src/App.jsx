@@ -45,7 +45,7 @@ const App = () => {
 
             window.localStorage.setItem(
                 "loggedBlogappUser",
-                JSON.stringify(user)
+                JSON.stringify(user),
             );
 
             blogService.setToken(user.token);
@@ -66,7 +66,7 @@ const App = () => {
         blogService.create(blogObject).then((returnedBlog) => {
             handleNotification(
                 `A new blog "${blogObject.title}" by ${blogObject.author} added!`,
-                "success"
+                "success",
             );
 
             const blogUser = {
@@ -94,13 +94,13 @@ const App = () => {
                                 likes: returnedBlog.likes,
                             };
                         }
-                    })
+                    }),
                 );
             })
             .catch((error) => {
                 handleNotification(
                     "Blog was already removed from server",
-                    "error"
+                    "error",
                 );
             });
     };
@@ -108,7 +108,7 @@ const App = () => {
     const handleDeleteBlog = (blog) => {
         if (
             window.confirm(
-                `Are you sure you want to delete blog "${blog.title}"?`
+                `Are you sure you want to delete blog "${blog.title}"?`,
             )
         ) {
             blogService
@@ -120,7 +120,7 @@ const App = () => {
                 .catch(() => {
                     handleNotification(
                         `"${blog.title}" was already deleted`,
-                        "error"
+                        "error",
                     );
                 });
         }
