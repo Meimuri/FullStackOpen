@@ -1,12 +1,31 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { likeBlog, deleteBlog } from "../reducers/blogReducer";
 import Button from "./Button";
 
-const BlogContent = ({ blog, user, handleLike, handleDelete }) => {
+const BlogContent = ({ blog, user }) => {
+    const dispatch = useDispatch();
+
     const [isActive, setIsActive] = useState(false);
     const isAuthor =
         blog.user.username.toString() === user.username.toString()
             ? true
             : false;
+
+    const handleLikeBlog = (blog) => {
+        dispatch(likeBlog(blog));
+    };
+
+    const handleDeleteBlog = (blog) => {
+        if (
+            window.confirm(
+                `Are you sure you want to delete "${blog.title}" by ${blog.author}?`,
+            )
+        ) {
+            dispatch(deleteBlog(blog, user));
+        }
+    };
+
     return (
         <div className="blog">
             <div>
@@ -19,12 +38,18 @@ const BlogContent = ({ blog, user, handleLike, handleDelete }) => {
                         </p>
                         <p>
                             <span>Likes:</span> {blog.likes}
-                            <Button label="Like" onClick={handleLike} />
+                            <Button
+                                label="Like"
+                                onClick={() => handleLikeBlog(blog)}
+                            />
                         </p>
                         <p>{blog.user.name}</p>
                         {isAuthor && (
                             <p>
-                                <Button label="Delete" onClick={handleDelete} />
+                                <Button
+                                    label="Delete"
+                                    onClick={() => handleDeleteBlog(blog)}
+                                />
                             </p>
                         )}
                         <button onClick={() => setIsActive(false)}>Hide</button>

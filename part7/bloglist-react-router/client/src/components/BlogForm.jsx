@@ -1,17 +1,13 @@
-// import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createBlog } from "../reducers/blogReducer";
 import { Form, Field } from "react-final-form";
 
 const BlogForm = () => {
     const dispatch = useDispatch();
-    // const blogFormRef = useRef();
     const user = useSelector((state) => state.login);
 
     const onSubmit = async (event) => {
         dispatch(createBlog(event, user));
-        // Save the toggleVisibility on store
-        // blogFormRef.current.toggleVisibility();
     };
 
     return (

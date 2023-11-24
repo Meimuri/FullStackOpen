@@ -10,7 +10,6 @@ import Welcome from "./Welcome";
 const Blog = () => {
     const user = useSelector((state) => state.login);
     const blogs = [...useSelector((state) => state.blog)];
-    // const sortBlogs = [...blogs];
 
     return (
         <div>

@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import loginService from "../services/login";
-import blogService from "../services/blogs";
 import { setNotification } from "./notificationReducer";
 
 const loginSlice = createSlice({
@@ -21,7 +20,6 @@ export const handleLocalStorageLogin = (storage) => {
         if (loggedUserJSON) {
             const user = JSON.parse(loggedUserJSON);
             dispatch(setUser(user));
-            blogService.setToken(user.token);
         }
     };
 };
@@ -38,7 +36,6 @@ export const handleLogin = ({ username, password }) => {
                 "loggedBlogappUser",
                 JSON.stringify(user),
             );
-            blogService.setToken(user.token);
         } catch (exception) {
             dispatch(setNotification("Wrong credentials", "error", 5));
         }
