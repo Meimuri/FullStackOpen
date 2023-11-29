@@ -1,29 +1,64 @@
-import { useSelector } from "react-redux";
-// import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Header from "./Header";
+import { useMatch, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { likeBlog, deleteBlog } from "../reducers/blogReducer";
 import Subheader from "./Subheader";
-import Togglable from "./Togglable";
-import BlogForm from "./BlogForm";
-import BlogContent from "./BlogContent";
-import Welcome from "./Welcome";
+import Button from "./Button";
 
 const Blog = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const match = useMatch("/blogs/:id");
+
     const user = useSelector((state) => state.login);
     const blogs = [...useSelector((state) => state.blog)];
 
+    const blog = match
+        ? blogs.find((blog) => blog.id === match.params.id)
+        : null;
+
+    if (!blog) {
+        return null;
+    }
+
+    const isAuthor =
+        blog.user.username.toString() === user.username.toString()
+            ? true
+            : false;
+
+    const handleLikeBlog = (blog) => {
+        dispatch(likeBlog(blog));
+    };
+
+    const handleDeleteBlog = (blog) => {
+        if (
+            window.confirm(
+                `Are you sure you want to delete "${blog.title}" by ${blog.author}?`,
+            )
+        ) {
+            dispatch(deleteBlog(blog, user));
+            navigate("/");
+        }
+    };
+
     return (
         <div>
-            <Header text="Blog" />
-            <Welcome />
-            <Togglable buttonLabel="New Blog">
-                <BlogForm />
-            </Togglable>
-            <Subheader text="Blog list" />
-            {blogs
-                .sort((a, b) => b.likes - a.likes)
-                .map((blog) => (
-                    <BlogContent key={blog.id} blog={blog} user={user} />
-                ))}
+            <Subheader text={blog.title} />
+            <a href={blog.url}>{blog.url}</a>
+            <p>
+                <span>Likes:</span> {blog.likes}
+                <Button label="Like" onClick={() => handleLikeBlog(blog)} />
+            </p>
+            <p>
+                Added by <b>{blog.user.name}</b>
+            </p>
+            {isAuthor && (
+                <p>
+                    <Button
+                        label="Delete"
+                        onClick={() => handleDeleteBlog(blog)}
+                    />
+                </p>
+            )}
         </div>
     );
 };

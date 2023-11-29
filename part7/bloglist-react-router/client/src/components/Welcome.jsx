@@ -12,10 +12,10 @@ const Welcome = () => {
     };
 
     return (
-        <p>
+        <>
             {`${login.name} logged in `}
             <Button label="Logout" onClick={onClickLogout} />
-        </p>
+        </>
     );
 };
 
