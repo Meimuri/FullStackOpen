@@ -49,9 +49,22 @@ blogsRouter.put("/:id", async (request, response) => {
         request.params.id,
         { title, url, author, likes },
         { new: true }
-    );
+    ).populate("user");
 
-    updatedBlog = await Blog.findById(updatedBlog._id).populate("user");
+    response.json(updatedBlog);
+});
+
+blogsRouter.put("/:id/comment", async (request, response) => {
+    const comments = request.body.comment;
+
+    let updatedBlog = await Blog.findByIdAndUpdate(
+        request.params.id,
+        { $push: { comments } },
+        {
+            new: true,
+        }
+    ).populate("user");
+
     response.json(updatedBlog);
 });
 

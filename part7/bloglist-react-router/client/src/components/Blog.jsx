@@ -51,6 +51,10 @@ const Blog = () => {
             <p>
                 Added by <b>{blog.user.name}</b>
             </p>
+            <h3>Comments</h3>
+            {blog.comments.map((comment, i) => (
+                <li key={i}>{comment}</li>
+            ))}
             {isAuthor && (
                 <p>
                     <Button
