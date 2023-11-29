@@ -1,19 +1,20 @@
 import { useMatch, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { likeBlog, deleteBlog } from "../reducers/blogReducer";
+import { likeBlog, deleteBlog, createComment } from "../reducers/blogReducer";
+import { Form, Field } from "react-final-form";
 import Subheader from "./Subheader";
 import Button from "./Button";
 
 const Blog = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const match = useMatch("/blogs/:id");
+    const blogID = useMatch("/blogs/:id");
 
     const user = useSelector((state) => state.login);
     const blogs = [...useSelector((state) => state.blog)];
 
-    const blog = match
-        ? blogs.find((blog) => blog.id === match.params.id)
+    const blog = blogID
+        ? blogs.find((blog) => blog.id === blogID.params.id)
         : null;
 
     if (!blog) {
@@ -40,6 +41,10 @@ const Blog = () => {
         }
     };
 
+    const onSubmit = async (event) => {
+        dispatch(createComment(event, blogID.params.id));
+    };
+
     return (
         <div>
             <Subheader text={blog.title} />
@@ -52,6 +57,36 @@ const Blog = () => {
                 Added by <b>{blog.user.name}</b>
             </p>
             <h3>Comments</h3>
+            <div>
+                <Form
+                    onSubmit={onSubmit}
+                    render={({ handleSubmit, form, submitting, pristine }) => (
+                        <form
+                            onSubmit={async (event) => {
+                                await handleSubmit(event);
+                                form.reset();
+                            }}
+                        >
+                            <div>
+                                <Field
+                                    name="comment"
+                                    component="input"
+                                    type="text"
+                                    placeholder=""
+                                />
+                                <button
+                                    id="save-button"
+                                    type="submit"
+                                    disabled={submitting || pristine}
+                                >
+                                    Add comment
+                                </button>
+                            </div>
+                        </form>
+                    )}
+                />
+            </div>{" "}
+            <br />
             {blog.comments.map((comment, i) => (
                 <li key={i}>{comment}</li>
             ))}

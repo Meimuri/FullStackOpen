@@ -33,4 +33,9 @@ const remove = (id, auth) => {
     return request.then((response) => response.data);
 };
 
-export default { getAll, create, addLike, remove };
+const addComment = async (object, id) => {
+    const response = await axios.put(`${baseUrl}/${id}/comment`, object);
+    return response.data;
+};
+
+export default { getAll, create, addLike, remove, addComment };
