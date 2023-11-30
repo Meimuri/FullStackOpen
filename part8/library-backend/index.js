@@ -18,19 +18,14 @@ let authors = [
         born: 1821,
     },
     {
-        name: "Joshua Kerievsky", // birthyear not known
+        name: "Joshua Kerievsky",
         id: "afa5b6f2-344d-11e9-a414-719c6709cf3e",
     },
     {
-        name: "Sandi Metz", // birthyear not known
+        name: "Sandi Metz",
         id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
     },
 ];
-
-/*
- * It might make more sense to associate a book with its author by storing the author's id in the context of the book instead of the author's name
- * However, for simplicity, we will store the author's name in connection with the book
- */
 
 let books = [
     {
@@ -85,7 +80,7 @@ let books = [
 ];
 
 /*
-  you can remove the placeholder query once your first one has been implemented 
+  you can remove the placeholder query once your first one has been implemented
 */
 
 const typeDefs = `
@@ -97,10 +92,16 @@ const typeDefs = `
 		genres: [String!]!
 	}
 
+	type Author {
+		name: String!
+		bookCount: Int!
+	}
+
 	type Query {
 		bookCount: Int!
 		authorCount: Int!
 		allBooks: [Book!]!
+		allAuthors: [Author!]!
 	}
 `;
 
@@ -108,7 +109,20 @@ const resolvers = {
     Query: {
         bookCount: () => books.length,
         authorCount: () => authors.length,
-        allBooks: (root, args) => books,
+        allBooks: () => books,
+        allAuthors: () => {
+            const authorBookCount = authors.map(({ name }) => {
+                const bookCount = books.filter(
+                    (book) => book.author === name
+                ).length;
+                return {
+                    name,
+                    bookCount,
+                };
+            });
+
+            return authorBookCount;
+        },
     },
 };
 
