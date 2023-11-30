@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import Header from "./Header";
-import Menu from "./Menu";
+import Menubar from "./Menubar";
 import BlogList from "./BlogList";
 import Blog from "./Blog";
 import UserList from "./UserList";
@@ -9,8 +8,7 @@ import User from "./User";
 const Main = () => {
     return (
         <div>
-            <Header text="Blog" />
-            <Menu />
+            <Menubar />
 
             <Routes>
                 <Route path="/" element={<BlogList />} />
