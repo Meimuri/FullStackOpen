@@ -65,6 +65,14 @@ The course covers testing, configuration and environment management, the use of 
 -   Class components, Miscellaneous
 -   Exercises: Extending the bloglist
 
+### [Part 8 - GraphQL](https://github.com/Meimuri/fullstackopen/tree/main/part8)
+
+-   GraphQL-server
+-   React and GraphQL
+-   Database and user administration
+-   Login and updating the cache
+-   Fragments and subscriptions
+
 ## Certificate
 
 ![Part 1 to 7](assets/part1to7.png)
