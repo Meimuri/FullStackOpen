@@ -20,6 +20,27 @@ export const ALL_BOOKS = gql`
     }
 `;
 
+export const CREATE_BOOK = gql`
+    mutation Mutation(
+        $title: String!
+        $author: String!
+        $published: Int!
+        $genres: [String!]!
+    ) {
+        addBook(
+            title: $title
+            author: $author
+            published: $published
+            genres: $genres
+        ) {
+            author
+            genres
+            published
+            title
+        }
+    }
+`;
+
 // export const FIND_PERSON = gql`
 //     query findPersonByName($nameToSearch: String!) {
 //         findPerson(name: $nameToSearch) {
