@@ -10,6 +10,16 @@ export const ALL_AUTHORS = gql`
     }
 `;
 
+export const ALL_BOOKS = gql`
+    query {
+        allBooks {
+            title
+            author
+            published
+        }
+    }
+`;
+
 // export const FIND_PERSON = gql`
 //     query findPersonByName($nameToSearch: String!) {
 //         findPerson(name: $nameToSearch) {
