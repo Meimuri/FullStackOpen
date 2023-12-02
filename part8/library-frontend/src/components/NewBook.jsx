@@ -6,7 +6,7 @@ import { ALL_BOOKS, ALL_AUTHORS, CREATE_BOOK } from "../queries";
 const NewBook = () => {
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
-    const [publish, setPublish] = useState(0);
+    const [publish, setPublish] = useState("");
     const [genre, setGenre] = useState("");
     const [genres, setGenres] = useState([]);
 
