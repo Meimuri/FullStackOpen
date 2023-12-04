@@ -2,6 +2,29 @@ const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
 const { v1: uuid } = require("uuid");
 
+const jwt = require("jsonwebtoken");
+
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
+
+const config = require("./utils/config");
+const Book = require("./models/book");
+const Author = require("./models/author");
+require("dotenv").config();
+
+const MONGODB_URI = config.MONGODB_URI;
+
+console.log("connecting to", config.MONGODB_URI);
+
+mongoose
+    .connect(config.MONGODB_URI)
+    .then(() => {
+        console.log("connected to MongoDB");
+    })
+    .catch((error) => {
+        console.log("error connection to MongoDB:", error.message);
+    });
+
 let authors = [
     {
         name: "Robert Martin",
@@ -88,7 +111,7 @@ const typeDefs = `
 	type Book {
 		title: String!
 		published: Int!
-		author: String!
+		author: Author!
 		id: ID!
 		genres: [String!]!
 	}
@@ -119,7 +142,10 @@ const typeDefs = `
 
 const resolvers = {
     Query: {
-        bookCount: () => books.length,
+        // bookCount: async () => {
+        //     const count = await Book.countDocuments();
+        //     return count;
+        // },
         authorCount: () => authors.length,
         allBooks: (root, args) => {
             let filter = books;
@@ -136,43 +162,107 @@ const resolvers = {
 
             return filter;
         },
-        allAuthors: () => {
+        allAuthors: async () => {
+            // return authors.map((author) => {
+            //     const booksByAuthor = books.filter(
+            //         (book) => book.author === author.name
+            //     );
+            //     const born = author.born !== undefined ? author.born : null;
+
+            //     const bookCount = booksByAuthor.length;
+
+            //     return {
+            //         name: author.name,
+            //         born,
+            //         bookCount,
+            //     };
+            // });
+            // return Author.find({});
+            const authors = await Author.find({}).populate("books");
             return authors.map((author) => {
-                const booksByAuthor = books.filter(
-                    (book) => book.author === author.name
-                );
-                const born = author.born !== undefined ? author.born : null;
-
-                const bookCount = booksByAuthor.length;
-
+                const bookCount = author.books.length;
                 return {
                     name: author.name,
-                    born,
-                    bookCount,
+                    born: author.born,
+                    bookCount: bookCount,
                 };
             });
         },
     },
     Mutation: {
-        addBook: (root, args) => {
-            const foundAuthor = authors.find(
-                (author) => author.name === args.author
-            );
+        addBook: async (root, args) => {
+            // const foundAuthor = authors.find(
+            //     (author) => author.name === args.author
+            // );
 
-            if (!foundAuthor) {
-                const newAuthor = {
-                    name: args.author,
-                    id: uuid(),
-                };
+            // if (!foundAuthor) {
+            //     const newAuthor = {
+            //         name: args.author,
+            //         id: uuid(),
+            //     };
 
-                authors = authors.concat(newAuthor);
+            //     authors = authors.concat(newAuthor);
+            // }
+
+            // const book = { ...args, id: uuid() };
+
+            // books = books.concat(book);
+
+            // return book;
+            // let author = await Author.findOne({ name: args.author });
+
+            // if (!author) {
+            //     author = new Author({
+            //         name: args.author,
+            //     });
+            //     await author.save();
+            // }
+
+            // const book = new Book({
+            //     ...args,
+            //     author: author,
+            // });
+            // await book.save();
+
+            // author.books.push(book);
+            // await author.save();
+
+            // return book;
+            try {
+                let author;
+
+                if (!args.author) {
+                    throw new Error("Author name is required.");
+                }
+
+                // Check if the author already exists in the database
+                author = await Author.findOne({ name: args.author });
+
+                if (!author) {
+                    // If not, create a new author
+                    author = new Author({
+                        name: args.author,
+                    });
+                    await author.save();
+                }
+
+                // Create a new book and save it to the database
+                const book = new Book({
+                    ...args,
+                    author: author._id,
+                });
+
+                await book.save();
+
+                // Update the author's books array
+                // author.books.push(book);
+                // await author.save();
+
+                return book;
+            } catch (error) {
+                console.error(error);
+                throw new Error("An error occurred while adding the book.");
             }
-
-            const book = { ...args, id: uuid() };
-
-            books = books.concat(book);
-
-            return book;
         },
         editAuthor: (root, args) => {
             const authorToEdit = authors.find(
@@ -201,6 +291,19 @@ const server = new ApolloServer({
 
 startStandaloneServer(server, {
     listen: { port: 4000 },
+    // context: async ({ req, res }) => {
+    //     const auth = req ? req.headers.authorization : null;
+    //     if (auth && auth.startsWith("Bearer ")) {
+    //         const decodedToken = jwt.verify(
+    //             auth.substring(7),
+    //             config.JWT_SECRET
+    //         );
+    //         const currentUser = await User.findById(decodedToken.id).populate(
+    //             "friends"
+    //         );
+    //         return { currentUser };
+    //     }
+    // },
 }).then(({ url }) => {
     console.log(`Server ready at ${url}`);
 });
