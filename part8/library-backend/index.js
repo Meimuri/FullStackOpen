@@ -191,78 +191,24 @@ const resolvers = {
     },
     Mutation: {
         addBook: async (root, args) => {
-            // const foundAuthor = authors.find(
-            //     (author) => author.name === args.author
-            // );
+            const foundAuthor = authors.find(
+                (author) => author.name === args.author
+            );
 
-            // if (!foundAuthor) {
-            //     const newAuthor = {
-            //         name: args.author,
-            //         id: uuid(),
-            //     };
+            if (!foundAuthor) {
+                const newAuthor = {
+                    name: args.author,
+                    id: uuid(),
+                };
 
-            //     authors = authors.concat(newAuthor);
-            // }
-
-            // const book = { ...args, id: uuid() };
-
-            // books = books.concat(book);
-
-            // return book;
-            // let author = await Author.findOne({ name: args.author });
-
-            // if (!author) {
-            //     author = new Author({
-            //         name: args.author,
-            //     });
-            //     await author.save();
-            // }
-
-            // const book = new Book({
-            //     ...args,
-            //     author: author,
-            // });
-            // await book.save();
-
-            // author.books.push(book);
-            // await author.save();
-
-            // return book;
-            try {
-                let author;
-
-                if (!args.author) {
-                    throw new Error("Author name is required.");
-                }
-
-                // Check if the author already exists in the database
-                author = await Author.findOne({ name: args.author });
-
-                if (!author) {
-                    // If not, create a new author
-                    author = new Author({
-                        name: args.author,
-                    });
-                    await author.save();
-                }
-
-                // Create a new book and save it to the database
-                const book = new Book({
-                    ...args,
-                    author: author._id,
-                });
-
-                await book.save();
-
-                // Update the author's books array
-                // author.books.push(book);
-                // await author.save();
-
-                return book;
-            } catch (error) {
-                console.error(error);
-                throw new Error("An error occurred while adding the book.");
+                authors = authors.concat(newAuthor);
             }
+
+            const book = { ...args, id: uuid() };
+
+            books = books.concat(book);
+
+            return book;
         },
         editAuthor: (root, args) => {
             const authorToEdit = authors.find(
@@ -291,19 +237,19 @@ const server = new ApolloServer({
 
 startStandaloneServer(server, {
     listen: { port: 4000 },
-    // context: async ({ req, res }) => {
-    //     const auth = req ? req.headers.authorization : null;
-    //     if (auth && auth.startsWith("Bearer ")) {
-    //         const decodedToken = jwt.verify(
-    //             auth.substring(7),
-    //             config.JWT_SECRET
-    //         );
-    //         const currentUser = await User.findById(decodedToken.id).populate(
-    //             "friends"
-    //         );
-    //         return { currentUser };
-    //     }
-    // },
+    context: async ({ req, res }) => {
+        const auth = req ? req.headers.authorization : null;
+        if (auth && auth.startsWith("Bearer ")) {
+            const decodedToken = jwt.verify(
+                auth.substring(7),
+                config.JWT_SECRET
+            );
+            const currentUser = await User.findById(decodedToken.id).populate(
+                "friends"
+            );
+            return { currentUser };
+        }
+    },
 }).then(({ url }) => {
     console.log(`Server ready at ${url}`);
 });
