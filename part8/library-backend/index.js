@@ -35,7 +35,8 @@ mongoose
         console.log("Error connection to MongoDB:", error.message);
     });
 
-// setup is now within a function
+mongoose.set("debug", true);
+
 const start = async () => {
     const app = express();
     const httpServer = http.createServer(app);
