@@ -73,6 +73,14 @@ The course covers testing, configuration and environment management, the use of 
 -   Login and updating the cache
 -   Fragments and subscriptions
 
+### [Part 9 - TypeScript](https://github.com/Meimuri/fullstackopen/tree/main/part9)
+
+-   Background and Introduction
+-   First steps with TypeScript
+-   Typing an Express app
+-   React with Types
+-   Grande Finale: Patientor
+
 ## Certificate
 
 ### Part 1 to 7
