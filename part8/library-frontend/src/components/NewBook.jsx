@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
+import { updateBookCache } from "../utils/updateBookCache";
+import { updateAuthorsCache } from "../utils/updateAuthorCache";
 
 import { ALL_BOOKS, ALL_AUTHORS, CREATE_BOOK } from "../queries";
 
@@ -18,49 +20,11 @@ const NewBook = () => {
             console.log(messages);
         },
         update: (cache, { data: { addBook } }) => {
-            // Update ALL_BOOKS
-            const { allBooks } = cache.readQuery({
-                query: ALL_BOOKS,
-                variables: { genre: "" },
+            updateBookCache(cache, ALL_BOOKS, addBook);
+            updateAuthorsCache(cache, ALL_AUTHORS, {
+                name: addBook.author.name,
+                bookCount: 1,
             });
-
-            cache.writeQuery({
-                query: ALL_BOOKS,
-                variables: { genre: "" },
-                data: { allBooks: [...allBooks, addBook] },
-            });
-
-            // Update ALL_AUTHORS
-            const { allAuthors } = cache.readQuery({
-                query: ALL_AUTHORS,
-            });
-
-            const authorExists = allAuthors.some(
-                (author) => author.name === addBook.author
-            );
-
-            if (!authorExists) {
-                cache.writeQuery({
-                    query: ALL_AUTHORS,
-                    data: {
-                        allAuthors: [
-                            ...allAuthors,
-                            { name: addBook.author, bookCount: 1 },
-                        ],
-                    },
-                });
-            } else {
-                cache.writeQuery({
-                    query: ALL_AUTHORS,
-                    data: {
-                        allAuthors: allAuthors.map((author) =>
-                            author.name === addBook.author
-                                ? { ...author, bookCount: author.bookCount + 1 }
-                                : author
-                        ),
-                    },
-                });
-            }
         },
     });
 
