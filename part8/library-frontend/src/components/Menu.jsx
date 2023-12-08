@@ -37,7 +37,6 @@ const Menu = ({ token, setToken }) => {
                     Login
                 </Link>
             )}
-            {console.log(token)}
         </>
     );
 };

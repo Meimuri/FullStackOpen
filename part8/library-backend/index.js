@@ -56,6 +56,7 @@ const typeDefs = `
 		bookCount: Int!
 		allBooks(author: String, genre: String): [Book!]!
 		allAuthors: [Author!]!
+		uniqueGenres: [String]
 		me: User
 	}
 
@@ -119,6 +120,10 @@ const resolvers = {
                     bookCount: bookCount,
                 };
             });
+        },
+        uniqueGenres: async () => {
+            const uniqueGenres = await Book.distinct("genres");
+            return uniqueGenres;
         },
         me: (root, args, context) => {
             return context.currentUser;
