@@ -2,9 +2,9 @@
 
 ## About the course
 
-This course serves as an introduction to modern web application development with JavaScript. The main focus is on building single page applications with ReactJS that use REST APIs built with Node.js. The course also contains a section on GraphQL, a modern alternative to REST APIs.
+Welcome to the Full Stack Open 2023, an immersive journey into modern web application development with JavaScript. This course primarily focuses on building single-page applications with ReactJS and utilizing REST APIs built with Node.js. Additionally, there's a dedicated section on GraphQL, a modern alternative to REST APIs.
 
-The course covers testing, configuration and environment management, the use of databases for storing the application’s data amongst other things.
+The course covers essential aspects such as testing, configuration, environment management, and database usage for storing application data, among other things.
 
 ## Course Contents
 
