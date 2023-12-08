@@ -75,7 +75,7 @@ The course covers testing, configuration and environment management, the use of 
 
 ## Certificate
 
-### Part 1 to Part 7
+### Part 1 to 7
 
 ![Part 1 to 7](assets/part1to7.png)
 
