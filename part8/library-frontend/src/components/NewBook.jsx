@@ -11,12 +11,56 @@ const NewBook = () => {
     const [genres, setGenres] = useState([]);
 
     const [createBook] = useMutation(CREATE_BOOK, {
-        refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
         onError: (error) => {
             const messages = error.graphQLErrors
                 .map((e) => e.message)
                 .join("\n");
             console.log(messages);
+        },
+        update: (cache, { data: { addBook } }) => {
+            // Update ALL_BOOKS
+            const { allBooks } = cache.readQuery({
+                query: ALL_BOOKS,
+                variables: { genre: "" },
+            });
+
+            cache.writeQuery({
+                query: ALL_BOOKS,
+                variables: { genre: "" },
+                data: { allBooks: [...allBooks, addBook] },
+            });
+
+            // Update ALL_AUTHORS
+            const { allAuthors } = cache.readQuery({
+                query: ALL_AUTHORS,
+            });
+
+            const authorExists = allAuthors.some(
+                (author) => author.name === addBook.author
+            );
+
+            if (!authorExists) {
+                cache.writeQuery({
+                    query: ALL_AUTHORS,
+                    data: {
+                        allAuthors: [
+                            ...allAuthors,
+                            { name: addBook.author, bookCount: 1 },
+                        ],
+                    },
+                });
+            } else {
+                cache.writeQuery({
+                    query: ALL_AUTHORS,
+                    data: {
+                        allAuthors: allAuthors.map((author) =>
+                            author.name === addBook.author
+                                ? { ...author, bookCount: author.bookCount + 1 }
+                                : author
+                        ),
+                    },
+                });
+            }
         },
     });
 
