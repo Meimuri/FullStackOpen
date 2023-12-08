@@ -25,10 +25,13 @@ const Menu = ({ token, setToken }) => {
 
             {token ? (
                 <>
+                    <Link style={padding} to="/recommendations">
+                        Recommendations
+                    </Link>
                     <Link style={padding} to="/newbook">
                         New Book
                     </Link>
-                    <Link style={padding} onClick={logout} to="/login">
+                    <Link style={padding} onClick={logout} to="/">
                         Logout
                     </Link>
                 </>

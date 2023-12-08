@@ -3,26 +3,28 @@ import { ALL_BOOKS, ALL_GENRES } from "../queries";
 import { useState } from "react";
 
 const Books = () => {
-    const [genreSearch, setGenreSearch] = useState("");
-    const result = useQuery(ALL_BOOKS, {
-        variables: { genre: genreSearch },
-    });
-    const allGenre = useQuery(ALL_GENRES);
+    const [selectedGenre, setSelectedGenre] = useState("");
 
-    if (result.loading) {
-        return <div>loading...</div>;
+    const { loading: booksLoading, data: booksData } = useQuery(ALL_BOOKS, {
+        variables: { genre: selectedGenre },
+    });
+
+    const { loading: genresLoading, data: genresData } = useQuery(ALL_GENRES);
+
+    if (booksLoading || genresLoading) {
+        return <div>Loading...</div>;
     }
 
-    const books = result.data.allBooks;
-    const genre = allGenre.data.uniqueGenres;
+    const books = booksData.allBooks;
+    const allGenres = genresData.uniqueGenres;
 
     const sortByGenre = (genre) => {
-        setGenreSearch(genre);
+        setSelectedGenre(genre);
     };
 
     return (
         <div>
-            <h2>books</h2>
+            <h2>All Books</h2>
 
             <table>
                 <tbody>
@@ -41,7 +43,7 @@ const Books = () => {
                 </tbody>
             </table>
             <button onClick={() => sortByGenre(null)}>All</button>
-            {genre.map((genre) => (
+            {allGenres.map((genre) => (
                 <button key={genre} onClick={() => sortByGenre(genre)}>
                     {genre}
                 </button>
