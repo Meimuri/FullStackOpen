@@ -65,7 +65,7 @@ const Authors = () => {
                     </select>
                 </div>
                 <div>
-                    Published
+                    Birth Year
                     <input
                         type="number"
                         value={birthYear}
