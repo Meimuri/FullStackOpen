@@ -1,0 +1,16 @@
+{
+    "name": "exercises-9.1-to-9.7",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "ts-node": "ts-node",
+        "calculate-bmi": "ts-node bmiCalculator.ts"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "ts-node": "^10.9.2",
+        "typescript": "^5.3.3"
+    }
+}
