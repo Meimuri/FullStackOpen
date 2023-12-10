@@ -8,9 +8,12 @@ interface Values {
     average: number;
 }
 
-const parseExerciseArguments = (
-    args: string[]
-): { targetDailyHours: number; dailyHours: number[] } => {
+interface ExerciseArguments {
+    targetDailyHours: number;
+    dailyHours: number[];
+}
+
+const parseExerciseArguments = (args: string[]): ExerciseArguments => {
     if (args.length < 3) throw new Error("Not enough arguments");
 
     const targetDailyHours = Number(args[2]);
@@ -45,6 +48,8 @@ const calculateRatingDescription = (rating: number): string => {
             return "Average";
         case 3:
             return "Perfect";
+        default:
+            return "Unknown rating";
     }
 };
 
