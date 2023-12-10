@@ -8,6 +8,35 @@ interface Values {
     average: number;
 }
 
+const parseExerciseArguments = (
+    args: string[]
+): { targetDailyHours: number; dailyHours: number[] } => {
+    if (args.length < 3) throw new Error("Not enough arguments");
+
+    const targetDailyHours = Number(args[2]);
+
+    const dailyHours = args.slice(3).map(Number);
+
+    if (!dailyHours.every((hours) => !isNaN(hours))) {
+        throw new Error("Provided daily hours were not numbers!");
+    }
+
+    return {
+        targetDailyHours,
+        dailyHours,
+    };
+};
+
+const calculateRating = (average: number, target: number): number => {
+    if (average >= target) {
+        return 3;
+    } else if (average >= (2 * target) / 3) {
+        return 2;
+    } else {
+        return 1;
+    }
+};
+
 const calculateRatingDescription = (rating: number): string => {
     switch (rating) {
         case 1:
@@ -16,8 +45,6 @@ const calculateRatingDescription = (rating: number): string => {
             return "Average";
         case 3:
             return "Perfect";
-        default:
-            return "Unknown rating";
     }
 };
 
@@ -33,7 +60,7 @@ const exerciseCalculator = (
     const average = periodLength > 0 ? totalHours / periodLength : 0;
     const success = dailyHours.every((hours) => hours >= target);
 
-    const rating = average >= 2 ? 3 : average >= 1.5 ? 2 : average >= 1 ? 1 : 0;
+    const rating = calculateRating(average, target);
     const ratingDescription = calculateRatingDescription(rating);
 
     const result: Values = {
@@ -49,4 +76,25 @@ const exerciseCalculator = (
     return result;
 };
 
-console.log(exerciseCalculator([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+    const { targetDailyHours, dailyHours } = parseExerciseArguments(
+        process.argv
+    );
+    console.log(exerciseCalculator(dailyHours, targetDailyHours));
+} catch (error: unknown) {
+    let errorMessage = "Something bad happened.";
+    if (error instanceof Error) {
+        errorMessage += " Error: " + error.message;
+    }
+    console.log(errorMessage);
+}
+
+interface Values {
+    periodLength: number;
+    trainingDays: number;
+    success: boolean;
+    rating: number;
+    ratingDescription: string;
+    target: number;
+    average: number;
+}
