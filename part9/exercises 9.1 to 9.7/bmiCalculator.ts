@@ -35,6 +35,8 @@ const calculateBmi = (weight: number, height: number): string => {
     if (bmi >= 30.0) {
         return "Overweight III (Severely obese)";
     }
+
+    return "BMI category not found";
 };
 
 try {
