@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import { NonSensitiveDiaryEntry } from "./types";
+import { getAllEntries } from "./diaryService";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+    const [diaries, setDiaries] = useState<NonSensitiveDiaryEntry[]>([]);
+    // const [newDate, setNewDate] = useState("");
+    // const [newWeather, setNewWeather] = useState("");
+    // const [newVisibility, setNewVisibility] = useState("");
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    useEffect(() => {
+        getAllEntries().then((data) => {
+            setDiaries(data);
+        });
+    }, []);
 
-export default App
+    const diaryCreation = (event: React.SyntheticEvent) => {
+        event.preventDefault();
+        // createEntry({ content: newNote }).then((data) => {
+        //     setNotes(notes.concat(data));
+        // });
+
+        // setNewNote("");
+    };
+
+    return (
+        <div>
+            <form onSubmit={diaryCreation}>
+                {/* <input
+                    value={newDate}
+                    onChange={(event) => setNewDate(event.target.value)}
+                /> */}
+                <button type="submit">add</button>
+            </form>
+            <div>
+                {diaries.map((diary) => (
+                    <div key={diary.id}>
+                        <h3>{diary.date}</h3>
+                        <p>
+                            <b>Weather: </b>
+                            {diary.weather}
+                        </p>
+                        <p>
+                            <b>Visibility: </b>
+                            {diary.visibility}
+                        </p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export default App;
