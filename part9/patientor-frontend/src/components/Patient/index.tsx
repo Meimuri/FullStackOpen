@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Patient, Gender, DiagnosisCode } from "../types";
+import { Patient, Gender, DiagnosisCode } from "../../types";
 import { useMatch } from "react-router-dom";
 import { Male, Female } from "@mui/icons-material";
 
-import patientService from "../services/patients";
-import diagnosesService from "../services/diagnoses";
+import patientService from "../../services/patients";
+import diagnosesService from "../../services/diagnoses";
+import EntryDetails from "./EntryDetails";
 
 const getGenderIcon = (gender: Gender) => {
     switch (gender) {
@@ -48,8 +49,8 @@ const PatientProfile = () => {
         return <div>Loading...</div>;
     }
 
-    const findDiagnoseDesc = (c: string) => {
-        const diagnose = diagnoses?.find((d) => d.code === c);
+    const findDiagnoseDesc = (diagnosisCode: string) => {
+        const diagnose = diagnoses?.find((d) => d.code === diagnosisCode);
         return diagnose?.name;
     };
 
@@ -64,18 +65,24 @@ const PatientProfile = () => {
             <h3>Entries</h3>
             {patient.entries &&
                 patient.entries.map((entry) => (
+                    // <div key={entry.id}>
+                    //     <p>
+                    //         {entry.date} <i>{entry.description}</i>
+                    //     </p>
+                    //     {entry.diagnosisCodes &&
+                    //         entry.diagnosisCodes.map((diagnosisCode) => (
+                    //             <li key={diagnosisCode}>
+                    //                 {diagnosisCode}
+                    //                 {" - "}
+                    //                 {findDiagnoseDesc(diagnosisCode)}
+                    //             </li>
+                    //         ))}
+                    // </div>
                     <div key={entry.id}>
-                        <p>
-                            {entry.date} <i>{entry.description}</i>
-                        </p>
-                        {entry.diagnosisCodes &&
-                            entry.diagnosisCodes.map((diagnosisCode) => (
-                                <li key={diagnosisCode}>
-                                    {diagnosisCode}
-                                    {" - "}
-                                    {findDiagnoseDesc(diagnosisCode)}
-                                </li>
-                            ))}
+                        <EntryDetails
+                            entry={entry}
+                            findDiagnoseDesc={findDiagnoseDesc}
+                        />
                     </div>
                 ))}
         </div>
