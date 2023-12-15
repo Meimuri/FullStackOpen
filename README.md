@@ -83,15 +83,15 @@ The course covers essential aspects such as testing, configuration, environment 
 
 ## Certificate
 
-### Part 1 to 7
+### [Part 1 to 7](https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/1a2210fbdf7707ebc1881a2fa306cb58)
 
 ![Part 1 to 7](assets/part1to7.png)
 
-### Part 8 - GraphQL
+### Part 8 - [GraphQL](https://studies.cs.helsinki.fi/stats/api/certificate/fs-graphql/en/0f18c8db4d473b9cf74da909a0ac8869)
 
 ![GraphQL](assets/certificate-graphql.png)
 
-### Part 9 - TypeScript
+### Part 9 - ![TypeScript](https://studies.cs.helsinki.fi/stats/api/certificate/fs-typescript/en/ffd25ac09f41505b88320772b3100f58)
 
 ![GraphQL](assets/certificate-typescript.png)
 
