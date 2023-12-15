@@ -99,7 +99,11 @@ const PatientProfile = () => {
             </h1>
             <p>SSN: {patient.ssn}</p>
             <p>Occupation: {patient.occupation}</p>
-            <AddEntryForm onSubmit={submitNewEntry} error={error} />
+            <AddEntryForm
+                onSubmit={submitNewEntry}
+                error={error}
+                diagnoses={diagnoses}
+            />
             {patient.entries && patient.entries.length > 0 && <h3>Entries</h3>}
             {patient.entries &&
                 patient.entries.map((entry) => (

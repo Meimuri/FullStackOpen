@@ -9,6 +9,8 @@ import {
     SelectChangeEvent,
     Box,
     Alert,
+    FormControl,
+    OutlinedInput,
 } from "@mui/material";
 import {
     Entry,
@@ -18,15 +20,16 @@ import {
 } from "../../types";
 
 interface Props {
+    diagnoses: { code: string; name: string }[] | null;
     onSubmit: (values: NewDiagnosisEntry) => void;
     error?: string;
 }
 
-const AddEntryForm = ({ onSubmit, error }: Props) => {
+const AddEntryForm = ({ onSubmit, error, diagnoses }: Props) => {
     const [description, setDescription] = useState("");
     const [date, setDate] = useState("");
     const [specialist, setSpecialist] = useState("");
-    const [diagnosisCode, setDiagnosisCode] = useState("");
+    const [diagnosisCode, setDiagnosisCode] = useState<string[]>([]);
     const [entryType, setEntryType] =
         useState<EntryWithoutId["type"]>("HealthCheck");
     const [healthCheckRating, setHealthCheckRating] = useState("0");
@@ -41,12 +44,16 @@ const AddEntryForm = ({ onSubmit, error }: Props) => {
         setEntryType(event.target.value as Entry["type"]);
     };
 
+    console.log(diagnoses);
+
+    const handleChangeDiagnosis = (
+        event: SelectChangeEvent<string[] | string>
+    ) => {
+        setDiagnosisCode(event.target.value as string[]);
+    };
+
     const submitNewEntry = async (event: SyntheticEvent) => {
         event.preventDefault();
-
-        const extractedDiagnosisCodes = diagnosisCode
-            .split(",")
-            .map((code) => code.trim());
 
         let formData: NewDiagnosisEntry;
 
@@ -55,7 +62,7 @@ const AddEntryForm = ({ onSubmit, error }: Props) => {
                 description,
                 date,
                 specialist,
-                diagnosisCodes: extractedDiagnosisCodes,
+                diagnosisCodes: diagnosisCode,
                 type: "HealthCheck",
                 healthCheckRating: parseInt(
                     healthCheckRating
@@ -66,7 +73,7 @@ const AddEntryForm = ({ onSubmit, error }: Props) => {
                 description,
                 date,
                 specialist,
-                diagnosisCodes: extractedDiagnosisCodes,
+                diagnosisCodes: diagnosisCode,
                 type: "OccupationalHealthcare",
                 employerName,
                 sickLeave: {
@@ -80,7 +87,7 @@ const AddEntryForm = ({ onSubmit, error }: Props) => {
                 description,
                 date,
                 specialist,
-                diagnosisCodes: extractedDiagnosisCodes,
+                diagnosisCodes: diagnosisCode,
                 type: "Hospital",
                 discharge: {
                     date: dischargeDate,
@@ -104,9 +111,8 @@ const AddEntryForm = ({ onSubmit, error }: Props) => {
                     sx={{ marginBottom: 1, marginTop: 1 }}
                 />
                 <TextField
-                    label="Date"
+                    type="date"
                     fullWidth
-                    placeholder="YYYY-MM-DD"
                     value={date}
                     onChange={({ target }) => setDate(target.value)}
                     sx={{ marginBottom: 1, marginTop: 1 }}
@@ -118,13 +124,28 @@ const AddEntryForm = ({ onSubmit, error }: Props) => {
                     onChange={({ target }) => setSpecialist(target.value)}
                     sx={{ marginBottom: 1, marginTop: 1 }}
                 />
-                <TextField
-                    label="Diagnosis Codes (comma-separated)"
-                    fullWidth
-                    value={diagnosisCode}
-                    onChange={({ target }) => setDiagnosisCode(target.value)}
-                    sx={{ marginBottom: 1, marginTop: 1 }}
-                />
+                <FormControl fullWidth sx={{ marginBottom: 1, marginTop: 1 }}>
+                    <InputLabel id="diagnosis-select-label">
+                        Diagnosis Codes
+                    </InputLabel>
+                    <Select
+                        labelId="diagnosis-select-label"
+                        id="diagnosis-select"
+                        multiple
+                        value={diagnosisCode}
+                        onChange={handleChangeDiagnosis}
+                        input={<OutlinedInput label="Diagnosis Codes" />}
+                    >
+                        {diagnoses?.map((diagnosis) => (
+                            <MenuItem
+                                key={diagnosis.code}
+                                value={diagnosis.code}
+                            >
+                                {diagnosis.code}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
 
                 <InputLabel sx={{ marginBottom: 1, marginTop: 1 }}>
                     Entry Type
@@ -168,7 +189,7 @@ const AddEntryForm = ({ onSubmit, error }: Props) => {
                             sx={{ marginBottom: 1, marginTop: 1 }}
                         />
                         <TextField
-                            label="Sick Leave Start Date"
+                            type="date"
                             fullWidth
                             value={sickLeaveStartDate}
                             onChange={({ target }) =>
@@ -177,7 +198,7 @@ const AddEntryForm = ({ onSubmit, error }: Props) => {
                             sx={{ marginBottom: 1, marginTop: 1 }}
                         />
                         <TextField
-                            label="Sick Leave End Date"
+                            type="date"
                             fullWidth
                             value={sickLeaveEndDate}
                             onChange={({ target }) =>
@@ -191,7 +212,7 @@ const AddEntryForm = ({ onSubmit, error }: Props) => {
                 {entryType === "Hospital" && (
                     <>
                         <TextField
-                            label="Discharge Date"
+                            type="date"
                             fullWidth
                             value={dischargeDate}
                             onChange={({ target }) =>
