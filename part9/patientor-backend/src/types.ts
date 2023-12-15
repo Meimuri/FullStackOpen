@@ -1,16 +1,72 @@
-export interface DiagnosesEntry {
+// // Diagnosis Types
+
+export interface DiagnosisCode {
     code: string;
     name: string;
     latin?: string;
 }
+
+export enum HealthCheckRating {
+    "Healthy" = 0,
+    "LowRisk" = 1,
+    "HighRisk" = 2,
+    "CriticalRisk" = 3,
+}
+
+export interface SickLeave {
+    startDate: string;
+    endDate: string;
+}
+
+export interface Discharge {
+    date: string;
+    criteria: string;
+}
+
+export interface DiagnosisEntry {
+    id: string;
+    description: string;
+    date: string;
+    specialist: string;
+    diagnosisCodes?: Array<DiagnosisCode["code"]>;
+}
+
+export interface HealthCheckEntry extends DiagnosisEntry {
+    type: "HealthCheck";
+    healthCheckRating: HealthCheckRating;
+}
+
+export interface OccupationalHealthcareEntry extends DiagnosisEntry {
+    type: "OccupationalHealthcare";
+    employerName: string;
+    sickLeave?: SickLeave;
+}
+
+export interface HospitalEntry extends DiagnosisEntry {
+    type: "Hospital";
+    discharge: Discharge;
+}
+
+export type Entry =
+    | HospitalEntry
+    | OccupationalHealthcareEntry
+    | HealthCheckEntry;
+
+export type NewDiagnosisEntry = Omit<DiagnosisEntry, "id">;
+
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+    ? Omit<T, K>
+    : never;
+
+export type EntryWithoutId = UnionOmit<Entry, "id">;
+
+// Patient Types
 
 export enum Gender {
     Male = "male",
     Female = "female",
     Other = "other",
 }
-
-export interface Entry {}
 
 export interface PatientsEntry {
     id: string;
