@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Patient, Gender } from "../types";
+import { Patient, Gender, DiagnosisCode } from "../types";
 import { useMatch } from "react-router-dom";
 import { Male, Female } from "@mui/icons-material";
 
 import patientService from "../services/patients";
+import diagnosesService from "../services/diagnoses";
 
 const getGenderIcon = (gender: Gender) => {
     switch (gender) {
@@ -18,6 +19,7 @@ const getGenderIcon = (gender: Gender) => {
 
 const PatientProfile = () => {
     const [patient, setPatient] = useState<Patient | null>(null);
+    const [diagnoses, setDiagnoses] = useState<DiagnosisCode[] | null>(null);
     const match = useMatch("/patient/:id");
 
     useEffect(() => {
@@ -33,15 +35,23 @@ const PatientProfile = () => {
             }
         };
 
-        fetchPatientById();
+        const fetchDiagnoses = async () => {
+            const diagnosesData = await diagnosesService.getAll();
+            setDiagnoses(diagnosesData);
+        };
+
+        void fetchPatientById();
+        void fetchDiagnoses();
     }, [match]);
 
-    if (!patient) {
+    if (!patient || !diagnoses) {
         return <div>Loading...</div>;
     }
 
-    const entries = patient.entries;
-    console.log(entries);
+    const findDiagnoseDesc = (c: string) => {
+        const diagnose = diagnoses?.find((d) => d.code === c);
+        return diagnose?.name;
+    };
 
     return (
         <div>
@@ -60,7 +70,11 @@ const PatientProfile = () => {
                         </p>
                         {entry.diagnosisCodes &&
                             entry.diagnosisCodes.map((diagnosisCode) => (
-                                <li>{diagnosisCode}</li>
+                                <li key={diagnosisCode}>
+                                    {diagnosisCode}
+                                    {" - "}
+                                    {findDiagnoseDesc(diagnosisCode)}
+                                </li>
                             ))}
                     </div>
                 ))}
