@@ -91,9 +91,9 @@ The course covers essential aspects such as testing, configuration, environment 
 
 ![GraphQL](assets/certificate-graphql.png)
 
-### Part 9 - ![TypeScript](https://studies.cs.helsinki.fi/stats/api/certificate/fs-typescript/en/ffd25ac09f41505b88320772b3100f58)
+### Part 9 - [TypeScript](https://studies.cs.helsinki.fi/stats/api/certificate/fs-typescript/en/ffd25ac09f41505b88320772b3100f58)
 
-![GraphQL](assets/certificate-typescript.png)
+![TypeScript](assets/certificate-typescript.png)
 
 ## Authors
 
