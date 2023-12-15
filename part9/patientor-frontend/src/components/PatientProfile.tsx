@@ -40,6 +40,9 @@ const PatientProfile = () => {
         return <div>Loading...</div>;
     }
 
+    const entries = patient.entries;
+    console.log(entries);
+
     return (
         <div>
             <h1>
@@ -48,6 +51,19 @@ const PatientProfile = () => {
             </h1>
             <p>SSN: {patient.ssn}</p>
             <p>Occupation: {patient.occupation}</p>
+            <h3>Entries</h3>
+            {patient.entries &&
+                patient.entries.map((entry) => (
+                    <div key={entry.id}>
+                        <p>
+                            {entry.date} <i>{entry.description}</i>
+                        </p>
+                        {entry.diagnosisCodes &&
+                            entry.diagnosisCodes.map((diagnosisCode) => (
+                                <li>{diagnosisCode}</li>
+                            ))}
+                    </div>
+                ))}
         </div>
     );
 };
