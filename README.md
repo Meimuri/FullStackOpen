@@ -91,6 +91,10 @@ The course covers essential aspects such as testing, configuration, environment 
 
 ![GraphQL](assets/certificate-graphql.png)
 
+### Part 9 - TypeScript
+
+![GraphQL](assets/certificate-typescript.png)
+
 ## Authors
 
 Parts 0-8 and 13 of the course material is written by [Matti Luukkainen](https://github.com/mluukkai). The content of part 9 is written by developers from [Terveystalo](https://www.terveystalo.com/fi/Yritystietoa/Terveystalo-tyontantajana/Digital-Health/). Part 10 is written by [Kalle Ilves](https://github.com/Kaltsoon). The content of part 11 is written by developers from [Smartly](https://www.smartly.io/) and part 12 is by [Jami Kousa](https://github.com/jakousa). Numerous [people](https://github.com/fullstack-hy2020/misc/blob/master/contributors.md) have improved and corrected the material both in content and spelling. You can also make improvements to the course material yourself.
