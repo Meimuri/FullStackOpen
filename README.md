@@ -81,6 +81,12 @@ The course covers essential aspects such as testing, configuration, environment 
 -   React with Types
 -   Grande Finale: Patientor
 
+### [Part 13 - Using Relational Databases](https://github.com/Meimuri/fullstackopen/tree/main/part13)
+
+-   Using relational databases with Sequelize
+-   Join tables and queries
+-   Migrations, many-to-many relationships
+
 ## Certificate
 
 ### [Part 1 to 7](https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/1a2210fbdf7707ebc1881a2fa306cb58)
