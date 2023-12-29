@@ -20,7 +20,7 @@ COPY . .
 
 ENV REACT_APP_BACKEND_URL=http://localhost:3000
 
-RUN npm ci
+RUN npm ci --only=production
 
 RUN npm run build
 
@@ -29,3 +29,6 @@ RUN npm install -g serve
 EXPOSE 5001
 
 CMD ["serve", "build"]
+
+# Build: docker build . -t todo-frontend
+# Run: docker run -p 5173:3000 todo-frontend
