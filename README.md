@@ -81,7 +81,7 @@ The course covers essential aspects such as testing, configuration, environment 
 -   React with Types
 -   Grande Finale: Patientor
 
-### [Part 12 - Containers](https://github.com/Meimuri/fullstackopen/tree/main/part13)
+### [Part 12 - Containers](https://github.com/Meimuri/fullstackopen/tree/main/part12)
 
 -   Introduction to Containers
 -   Building and configuring environments
