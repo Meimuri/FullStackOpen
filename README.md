@@ -81,6 +81,12 @@ The course covers essential aspects such as testing, configuration, environment 
 -   React with Types
 -   Grande Finale: Patientor
 
+### [Part 12 - Containers](https://github.com/Meimuri/fullstackopen/tree/main/part13)
+
+-   Introduction to Containers
+-   Building and configuring environments
+-   Basicas of Orchestration
+
 ### [Part 13 - Using Relational Databases](https://github.com/Meimuri/fullstackopen/tree/main/part13)
 
 -   Using relational databases with Sequelize
