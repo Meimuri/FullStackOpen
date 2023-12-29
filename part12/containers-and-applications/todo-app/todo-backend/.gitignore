@@ -60,5 +60,6 @@ typings/
 # next.js build output
 .next
 
-# mongo data
+# Docker data
 mongo_data
+redis_data
