@@ -1,0 +1,14 @@
+Script started on 2023-12-29 09:20:50+08:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="150" LINES="24"]
+[?2004h]0;meimuri@Meimuri: ~/repos/Full Stack Open/Exercises/part12/running-second-container/script-answers[01;32mmeimuri@Meimuri[00m:[01;34m~/repos/Full Stack Open/Exercises/part12/running-second-container/script-answers[00m$ docker container run -it ubuntu bash
+[?2004l[?2004h]0;root@3b333fb567ef: /root@3b333fb567ef:/# cd usr/a src/a 
+[?2004l[?2004h]0;root@3b333fb567ef: /usr/srcroot@3b333fb567ef:/usr/src# mkdir app
+[?2004l[?2004h]0;root@3b333fb567ef: /usr/srcroot@3b333fb567ef:/usr/src# cd app/
+[?2004l[?2004h]0;root@3b333fb567ef: /usr/src/approot@3b333fb567ef:/usr/src/app# touch index.js
+[?2004l[?2004h]0;root@3b333fb567ef: /usr/src/approot@3b333fb567ef:/usr/src/app# dir
+[?2004lindex.js
+[?2004h]0;root@3b333fb567ef: /usr/src/approot@3b333fb567ef:/usr/src/app# exit
+[?2004lexit
+[?2004h]0;meimuri@Meimuri: ~/repos/Full Stack Open/Exercises/part12/running-second-container/script-answers[01;32mmeimuri@Meimuri[00m:[01;34m~/repos/Full Stack Open/Exercises/part12/running-second-container/script-answers[00m$ exit
+[?2004lexit
+
+Script done on 2023-12-29 09:21:51+08:00 [COMMAND_EXIT_CODE="0"]
