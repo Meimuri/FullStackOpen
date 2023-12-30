@@ -8,6 +8,6 @@ services:
             - ./:/usr/src/app # The path can be relative, so ./ is enough to say "the same location as the docker-compose.yml"
         ports:
             - 5173:3000
-        container_name: todo-frontend-dev # This will name the container hello-front-dev
+        container_name: todo-frontend-dev # This will name the container todo-frontend-dev
 
 # Run: docker compose -f docker.compose.dev.yml up

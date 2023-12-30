@@ -13,6 +13,9 @@ services:
         environment:
             - REDIS_URL=redis://redis:6379
             - MONGO_URL=mongodb://the_username:the_password@mongo:27017/the_database
+        depends_on:
+            - mongo
+            - redis
         container_name: todo-backend-dev
 
     mongo:
