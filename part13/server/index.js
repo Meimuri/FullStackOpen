@@ -5,6 +5,7 @@ const { PORT } = require("./util/config");
 const { connectToDatabase } = require("./util/db");
 
 const blogsRouter = require("./controllers/blogs");
+const middleware = require("./util/middleware");
 
 app.use(express.json());
 
@@ -18,3 +19,6 @@ const start = async () => {
 };
 
 start();
+
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
