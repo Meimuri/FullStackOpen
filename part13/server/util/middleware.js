@@ -1,19 +1,19 @@
-const unknownEndpoint = (request, response) => {
-    response.status(404).send({ error: "Unknown endpoint" });
+const unknownEndpoint = (req, res, next) => {
+    res.status(404).send({ error: "Unknown endpoint" });
 };
 
-const errorHandler = (error, request, response, next) => {
-    console.error(error.errors);
+const errorHandler = (error, req, res, next) => {
+    console.error(error.message);
 
     if (error.name === "SequelizeDatabaseError") {
-        return response.status(400).json({ error: "Malformatted id" });
+        return res.status(400).json({ error: "Malformatted id" });
     } else if (error.name === "SequelizeValidationError") {
-        return response.status(400).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     } else {
-        response.status(error.status).json({ error: error.message });
+        res.status(error.status || 500).json({
+            error: error.message || "Internal Server Error",
+        });
     }
-
-    next(error);
 };
 
 module.exports = {

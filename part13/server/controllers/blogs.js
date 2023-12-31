@@ -4,22 +4,23 @@ const { Blog } = require("../models");
 
 const validateBlog = (req, res, next) => {
     const { author, url, title } = req.body;
-    // Check if url and title are provided and are strings
+
+    if (author && typeof author !== "string") {
+        return res.status(400).json({ error: "Author name must be a string" });
+    }
+
     if (!url || typeof url !== "string") {
         return res
             .status(400)
-            .json({ error: "Url is required and must be a string" });
+            .json({ error: "Blog URL is required and must be a string" });
     }
+
     if (!title || typeof title !== "string") {
         return res
             .status(400)
-            .json({ error: "Title is required and must be a string" });
+            .json({ error: "Blog title is required and must be a string" });
     }
 
-    // Check if author is a string if provided
-    if (author && typeof author !== "string") {
-        return res.status(400).json({ error: "Author must be a string" });
-    }
     next();
 };
 
@@ -28,28 +29,19 @@ router.get("/", async (req, res) => {
     res.json(blogs);
 });
 
-router.post("/", validateBlog, async (req, res, next) => {
-    await Blog.create(req.body)
-        .then((savedBlog) => {
-            res.status(201).json(savedBlog);
-        })
-        .catch((error) => next(error));
+router.post("/", validateBlog, async (req, res) => {
+    const savedBlog = await Blog.create(req.body);
+    res.status(201).json(savedBlog);
 });
 
-// Middleware to handle single note to eliminate repetitiveness of finding by ID
 const blogFinder = async (req, res, next) => {
-    await Blog.findByPk(req.params.id)
-        .then((blog) => {
-            if (blog) {
-                req.blog = blog;
-                next();
-            } else {
-                return res.status(404).json({
-                    error: "Blog not found",
-                });
-            }
-        })
-        .catch((error) => next(error));
+    const blog = await Blog.findByPk(req.params.id);
+    if (!blog) {
+        return res.status(404).json({ error: "Blog not found" });
+    } else {
+        req.blog = blog;
+        next();
+    }
 };
 
 router.get("/:id", blogFinder, async (req, res) => {
@@ -57,20 +49,14 @@ router.get("/:id", blogFinder, async (req, res) => {
 });
 
 router.delete("/:id", blogFinder, async (req, res) => {
-    if (req.blog) {
-        await req.blog.destroy();
-    }
+    await req.blog.destroy();
     res.status(204).end();
 });
 
 router.put("/:id", blogFinder, async (req, res) => {
-    if (req.blog) {
-        req.blog.likes = req.blog.likes + 1;
-        await req.blog.save();
-        res.json(req.blog);
-    } else {
-        res.status(404).end();
-    }
+    req.blog.likes = req.blog.likes + 1;
+    await req.blog.save();
+    res.json(req.blog);
 });
 
 module.exports = router;
