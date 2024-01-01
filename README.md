@@ -81,6 +81,14 @@ The course covers essential aspects such as testing, configuration, environment 
 -   React with Types
 -   Grande Finale: Patientor
 
+### [Part 11 - CI/CD](https://github.com/Meimuri/fullstackopen/tree/main/part11)
+
+-   Introduction to CI/CD
+-   Getting started with GitHub Actions
+-   Deployment
+-   Keeping green
+-   Expanding further
+
 ### [Part 12 - Containers](https://github.com/Meimuri/fullstackopen/tree/main/part12)
 
 -   Introduction to Containers
