@@ -26,9 +26,15 @@ router.get("/:id", blogFinder, async (req, res) => {
     res.json(req.blog);
 });
 
-router.delete("/:id", blogFinder, async (req, res) => {
-    await req.blog.destroy();
-    res.status(204).end();
+router.delete("/:id", userExtractor, blogFinder, async (req, res) => {
+    if (req.blog.userId === req.user.id) {
+        await req.blog.destroy();
+        res.status(204).end();
+    } else {
+        res.status(401).json({
+            error: "You cannot delete blogs that you didn't create",
+        });
+    }
 });
 
 router.put("/:id", blogFinder, async (req, res) => {

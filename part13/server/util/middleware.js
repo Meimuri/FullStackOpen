@@ -22,17 +22,6 @@ const errorHandler = (error, req, res, next) => {
     }
 };
 
-// const tokenExtractor2 = (req, res, next) => {
-//     const authorization = req.get("authorization");
-//     if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
-//         req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
-//     } else {
-//         return res.status(401).json({ error: "Missing token" });
-//     }
-
-//     next();
-// };
-
 const tokenExtractor = (req, res, next) => {
     const authorization = req.get("authorization");
 
@@ -51,6 +40,9 @@ const userExtractor = async (req, res, next) => {
             return res.status(401).json({ error: "Invalid token" });
         } else {
             const user = await User.findByPk(decodedToken.id);
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
+            }
             req.user = user;
         }
     } else {
