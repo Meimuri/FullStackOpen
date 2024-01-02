@@ -1,3 +1,7 @@
+const jwt = require("jsonwebtoken");
+const { SECRET } = require("../util/config");
+const { Blog, User } = require("../models");
+
 const unknownEndpoint = (req, res, next) => {
     res.status(404).send({ error: "Unknown endpoint" });
 };
@@ -5,7 +9,9 @@ const unknownEndpoint = (req, res, next) => {
 const errorHandler = (error, req, res, next) => {
     console.error(error.message);
 
-    if (error.name === "SequelizeDatabaseError") {
+    if (error.name === "JsonWebTokenError") {
+        return res.status(401).json({ error: "Invalid token" });
+    } else if (error.name === "SequelizeDatabaseError") {
         return res.status(400).json({ error: "Malformatted id" });
     } else if (error.name === "SequelizeValidationError") {
         return res.status(400).json({ error: error.message });
@@ -16,7 +22,80 @@ const errorHandler = (error, req, res, next) => {
     }
 };
 
+// const tokenExtractor2 = (req, res, next) => {
+//     const authorization = req.get("authorization");
+//     if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+//         req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
+//     } else {
+//         return res.status(401).json({ error: "Missing token" });
+//     }
+
+//     next();
+// };
+
+const tokenExtractor = (req, res, next) => {
+    const authorization = req.get("authorization");
+
+    if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+        req.token = authorization.replace("bearer ", "");
+    } else {
+        req.token = null;
+    }
+    next();
+};
+
+const userExtractor = async (req, res, next) => {
+    if (req.token) {
+        const decodedToken = jwt.verify(req.token.substring(7), SECRET);
+        if (!decodedToken.id) {
+            return res.status(401).json({ error: "Invalid token" });
+        } else {
+            const user = await User.findByPk(decodedToken.id);
+            req.user = user;
+        }
+    } else {
+        return res.status(401).json({ error: "Missing token" });
+    }
+    next();
+};
+
+const validateBlog = (req, res, next) => {
+    const { author, url, title } = req.body;
+
+    if (author && typeof author !== "string") {
+        return res.status(400).json({ error: "Author name must be a string" });
+    }
+
+    if (!url || typeof url !== "string") {
+        return res
+            .status(400)
+            .json({ error: "Blog URL is required and must be a string" });
+    }
+
+    if (!title || typeof title !== "string") {
+        return res
+            .status(400)
+            .json({ error: "Blog title is required and must be a string" });
+    }
+
+    next();
+};
+
+const blogFinder = async (req, res, next) => {
+    const blog = await Blog.findByPk(req.params.id);
+    if (!blog) {
+        return res.status(404).json({ error: "Blog not found" });
+    } else {
+        req.blog = blog;
+        next();
+    }
+};
+
 module.exports = {
     unknownEndpoint,
     errorHandler,
+    tokenExtractor,
+    userExtractor,
+    validateBlog,
+    blogFinder,
 };
