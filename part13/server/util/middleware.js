@@ -52,7 +52,7 @@ const userExtractor = async (req, res, next) => {
 };
 
 const validateBlog = (req, res, next) => {
-    const { author, url, title } = req.body;
+    const { author, url, title, year } = req.body;
 
     if (author && typeof author !== "string") {
         return res.status(400).json({ error: "Author name must be a string" });
@@ -68,6 +68,17 @@ const validateBlog = (req, res, next) => {
         return res
             .status(400)
             .json({ error: "Blog title is required and must be a string" });
+    }
+
+    if (
+        !year ||
+        typeof year !== "number" ||
+        year < 1600 ||
+        year > new Date().getFullYear()
+    ) {
+        return res.status(400).json({
+            error: "Year is required, must be a number, and should be between 1600 and the current year",
+        });
     }
 
     next();
