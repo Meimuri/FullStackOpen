@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const { Op } = require("sequelize");
 const router = require("express").Router();
 
 const { User, Blog, UserReadingList } = require("../models");
@@ -57,6 +58,12 @@ router.post("/", validateUser, async (req, res) => {
 });
 
 const userFinder = async (req, res, next) => {
+    const where = {};
+
+    if (req.query.read) {
+        where.read = req.query.read === "true";
+    }
+
     const user = await User.findByPk(req.params.id, {
         attributes: { exclude: ["id", "password", "createdAt", "updatedAt"] },
         include: [
@@ -70,6 +77,7 @@ const userFinder = async (req, res, next) => {
                     model: UserReadingList,
                     as: "readinglist",
                     attributes: ["id", "read"],
+                    where,
                 },
             },
         ],
