@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const router = require("express").Router();
 
-const { User, Blog } = require("../models");
+const { User, Blog, UserReadingList } = require("../models");
 
 const validateUser = (req, res, next) => {
     const { username, password, name } = req.body;
@@ -59,13 +59,20 @@ router.post("/", validateUser, async (req, res) => {
 const userFinder = async (req, res, next) => {
     const user = await User.findByPk(req.params.id, {
         attributes: { exclude: ["id", "password", "createdAt", "updatedAt"] },
-        include: {
-            model: Blog,
-            as: "readings",
-            attributes: {
-                exclude: ["createdAt", "updatedAt", "userId"],
+        include: [
+            {
+                model: Blog,
+                as: "readings",
+                attributes: {
+                    exclude: ["createdAt", "updatedAt", "userId"],
+                },
+                through: {
+                    model: UserReadingList,
+                    as: "readinglist",
+                    attributes: ["id", "read"],
+                },
             },
-        },
+        ],
     });
     if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -74,44 +81,6 @@ const userFinder = async (req, res, next) => {
         next();
     }
 };
-
-// router.get("/:id", async (req, res) => {
-//     const user = await User.findByPk(req.params.id, {
-//         attributes: { exclude: [""] },
-//         include: [
-//             {
-//                 model: Note,
-//                 attributes: { exclude: ["userId"] },
-//             },
-//             {
-//                 model: Note,
-//                 as: "marked_notes",
-//                 attributes: { exclude: ["userId"] },
-//                 through: {
-//                     attributes: [],
-//                 },
-
-//                 include: {
-//                     model: User,
-//                     attributes: ["name"],
-//                 },
-//             },
-//             {
-//                 model: Team,
-//                 attributes: ["name", "id"],
-//                 through: {
-//                     attributes: [],
-//                 },
-//             },
-//         ],
-//     });
-
-//     if (user) {
-//         res.json(user);
-//     } else {
-//         res.status(404).end();
-//     }
-// });
 
 router.get("/:id", userFinder, async (req, res) => {
     res.json(req.user);
