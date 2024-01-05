@@ -117,7 +117,11 @@ The course covers essential aspects such as testing, configuration, environment 
 
 ### Part 12 - [Containers](https://studies.cs.helsinki.fi/stats/api/certificate/fs-containers/en/938bf0358ffadf25b02d2705ce7f53c8)
 
-![TypeScript](assets/certificate-containers.png)
+![Containers](assets/certificate-containers.png)
+
+### Part 13 - [Relational Databases](https://studies.cs.helsinki.fi/stats/api/certificate/fs-psql/en/656d265b73e2020c93883f069578eb8a)
+
+![Relational Databases](assets/certificate-psql.png)
 
 ## Authors
 
