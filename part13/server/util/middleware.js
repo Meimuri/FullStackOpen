@@ -8,7 +8,7 @@ const unknownEndpoint = (req, res, next) => {
 
 const errorHandler = (error, req, res, next) => {
     console.error(error.message);
-
+    // SequelizeConnectionError;
     if (error.name === "JsonWebTokenError") {
         return res.status(401).json({ error: "Invalid token" });
     } else if (error.name === "SequelizeDatabaseError") {
