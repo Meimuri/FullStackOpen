@@ -115,6 +115,10 @@ The course covers essential aspects such as testing, configuration, environment 
 
 ![TypeScript](assets/certificate-typescript.png)
 
+### Part 11 - [CI/CD](https://studies.cs.helsinki.fi/stats/api/certificate/fs-cicd/en/8083f0a1d241dcbcb94386152dbfb08e)
+
+![CI/CD](assets/certificate-cicd.png)
+
 ### Part 12 - [Containers](https://studies.cs.helsinki.fi/stats/api/certificate/fs-containers/en/938bf0358ffadf25b02d2705ce7f53c8)
 
 ![Containers](assets/certificate-containers.png)
