@@ -2,7 +2,7 @@
 
 ## About the course
 
-Welcome to the Full Stack Open 2023, an immersive journey into modern web application development with JavaScript. This course primarily focuses on building single-page applications with ReactJS and utilizing REST APIs built with Node.js. Additionally, there's a dedicated section on GraphQL, a modern alternative to REST APIs.
+Full Stack Open 2023 is an immersive journey into modern web application development with JavaScript. This course primarily focuses on building single-page applications with ReactJS and utilizing REST APIs built with Node.js. Additionally, there's a dedicated section on GraphQL, a modern alternative to REST APIs.
 
 The course covers essential aspects such as testing, configuration, environment management, and database usage for storing application data, among other things.
 
